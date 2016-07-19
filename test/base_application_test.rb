@@ -5,13 +5,9 @@ require "test/unit"
 
 class TestBaseApplication < Test::Unit::TestCase
 
-  def app
-    BaseApplication
-  end
-
   def testRouteUsage
 
-    response = app.call(:testRouteUsageX)
+    response = BaseApplication.call(:testRouteUsageX)
 
     assertSuccessMsg(response)
 
@@ -19,7 +15,7 @@ class TestBaseApplication < Test::Unit::TestCase
   end
 
   def testBeforeAndAfter
-    response = app.call(:testBeforeAndAfter)
+    response = BaseApplication.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
@@ -28,70 +24,70 @@ class TestBaseApplication < Test::Unit::TestCase
   end
 
   def testStatus
-    response = app.call(:testStatus)
+    response = BaseApplication.call(:testStatus)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 135)
   end
 
    def testInvoke1
-    response = app.call(:testInvoke1)
+    response = BaseApplication.call(:testInvoke1)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end
   
   def testInvoke2
-    response = app.call(:testInvoke2)
+    response = BaseApplication.call(:testInvoke2)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 194)
   end
 
   def testHalt1
-    response = app.call(:testHalt1)
+    response = BaseApplication.call(:testHalt1)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end  
 
   def testHalt2
-    response = app.call(:testHalt2)
+    response = BaseApplication.call(:testHalt2)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 333)
   end  
 
   def testHalt3
-    response = app.call(:testHalt3)
+    response = BaseApplication.call(:testHalt3)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end  
 
   def testHalt4
-    response = app.call(:testHalt4)
+    response = BaseApplication.call(:testHalt4)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, -33)
   end  
 
   def testHalt5
-    response = app.call(:testHalt5)
+    response = BaseApplication.call(:testHalt5)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 444)
   end
 
   def testHalt6
-    response = app.call(:testHalt6)
+    response = BaseApplication.call(:testHalt6)
 
     assert(response.body == nil)
     assertResponseStatus(response, 0)
   end  
 
   def testRuntimeException
-    response = app.call(:testRuntimeException)
+    response = BaseApplication.call(:testRuntimeException)
 
     assert(response.body[:msg] == "got An Exception")
     assertResponseStatus(response, 0)
@@ -100,7 +96,7 @@ class TestBaseApplication < Test::Unit::TestCase
   end  
 
   def testCustomTestException
-    response = app.call(:testCustomTestException)
+    response = BaseApplication.call(:testCustomTestException)
 
     assert(response.body[:msg] == "got An Exception")
     assertResponseStatus(response, 0)
@@ -109,7 +105,7 @@ class TestBaseApplication < Test::Unit::TestCase
   end
 
   def testCustomTestExceptionForHalt
-    response = app.call(:testCustomTestExceptionForHalt)
+    response = BaseApplication.call(:testCustomTestExceptionForHalt)
 
     assert(response.body[:msg] == "got An CustomTestExceptionForHalt")
     assertResponseStatus(response, 0)
@@ -117,15 +113,24 @@ class TestBaseApplication < Test::Unit::TestCase
     assert(response.body[:steps] == ["before1", "before2", "testCustomTestExceptionForHalt", "customHaltErrorBlock", "after1", "after2"])
   end
 
+  def testParams
+    param = {name: "jeffrey"}
+    response = BaseApplication.call(:testParams, param)
+
+    assertResponseStatus(response, 391)
+
+    assert(response.body[:msg] == "got params #{param}")
+  end
+
   def testEmptyAction
-    response = app.call(:testEmptyAction)
+    response = BaseApplication.call(:testEmptyAction)
 
     assert(response.body == nil)
     assertResponseStatus(response, 0)
   end  
 
   def testNotFound
-    response = app.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
+    response = BaseApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
     assert(response.body[:msg] == "route Not Found")
     assertResponseStatus(response, 0)

@@ -180,7 +180,7 @@ module Jetra
         @prototype ||= new
       end
 
-      def call(route, params=nil)
+      def call(route, params={})
         prototype.call(route, params)
       end
 
@@ -196,9 +196,9 @@ module Jetra
         @filters[type] << compile!(&block)
       end
 
-      def route(path, &block)
-        block ||= Proc.new { method(path).call }
-        @routes[path] = compile!(&block)
+      def route(symbol, &block)
+        block ||= Proc.new { method(symbol).call }
+        @routes[symbol] = compile!(&block)
       end
 
       def error(*codes, &block)
@@ -237,10 +237,27 @@ module Jetra
         super
       end
 
+      def to_interface
+
+        interface = Interface.new
+        @routes.each_key do |symbol|
+          eval("interface.define_singleton_method(symbol) do |params={}| ; #{self.name}.call(symbol, params) ; end ")
+        end
+
+        eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; #{self.name}.call(method_name, params) ; end ")
+
+        interface
+      end
+
     end
 
     @routes         = {}
     @filters        = {:before => [], :after => []}
     @errors         = {}
   end
+
+  class Interface
+
+  end
+
 end

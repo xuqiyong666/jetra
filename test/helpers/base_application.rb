@@ -20,7 +20,7 @@ class BaseApplication < Jetra::Base
 
   def haltNotFound
     @steps << "notFoundInBaseApplication"
-    halt(msg: "route Not Found",steps: @steps)
+    halt(msg: "route Not Found", route: @request.route, params: @params, steps: @steps)
   end
 
   not_found do
@@ -100,6 +100,11 @@ class BaseApplication < Jetra::Base
     @steps << "notRun"
   end
 
+  def testParams
+    status(391)
+    halt(msg:"got params #{@params}")
+  end
+
   def testEmptyAction
   end
 
@@ -152,6 +157,7 @@ class BaseApplication < Jetra::Base
   route :testRuntimeException
   route :testCustomTestException
   route :testCustomTestExceptionForHalt
+  route :testParams
   route :testEmptyAction
 
 end

@@ -141,6 +141,15 @@ class TestSecondExtendApplication < Test::Unit::TestCase
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testCustomTestExceptionForHalt", "customHaltErrorBlock", "after1", "after2", "after3", "after4"])
   end
 
+  def testParams
+    param = {name: "jeffrey"}
+    response = SecondExtendApplication.call(:testParams, param)
+
+    assertResponseStatus(response, 391)
+
+    assert(response.body[:msg] == "got params #{param}")
+  end
+
   def testEmptyAction
     response = SecondExtendApplication.call(:testEmptyAction)
 
