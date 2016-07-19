@@ -8,10 +8,10 @@ module Jetra
 
   class Request
 
-    attr_accessor :method_name, :params
+    attr_accessor :route, :params
 
-    def initialize(method_name, params)
-      @method_name = method_name || ""
+    def initialize(route, params)
+      @route = route || ""
       @params = params || {}
     end
   end
@@ -32,15 +32,15 @@ module Jetra
 
   class Base
 
-    def call(method_name, params)
-      dup.call!(method_name, params)
+    def call(route, params)
+      dup.call!(route, params)
     end
 
-    def call!(method_name, params)
+    def call!(route, params)
 
       @env = {}
 
-      @request  = Request.new(method_name, params)
+      @request  = Request.new(route, params)
       @response = Response.new
 
       @params   = indifferent_params(@request.params)
@@ -136,7 +136,7 @@ module Jetra
 
     def route!
 
-      if block = current_class.routes[@request.method_name.to_sym]
+      if block = current_class.routes[@request.route.to_sym]
         process_route do |*args|
           route_eval { block[*args] }
         end
@@ -180,8 +180,8 @@ module Jetra
         @prototype ||= new
       end
 
-      def call(method_name, params=nil)
-        prototype.call(method_name, params)
+      def call(route, params=nil)
+        prototype.call(route, params)
       end
 
       def before(&block)
@@ -196,9 +196,9 @@ module Jetra
         @filters[type] << compile!(&block)
       end
 
-      def route(method_name, &block)
-        block ||= Proc.new { method(method_name).call }
-        @routes[method_name] = compile!(&block)
+      def route(path, &block)
+        block ||= Proc.new { method(path).call }
+        @routes[path] = compile!(&block)
       end
 
       def error(*codes, &block)
