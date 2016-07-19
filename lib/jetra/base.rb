@@ -176,8 +176,12 @@ module Jetra
 
       attr_accessor :routes, :filters, :errors
 
+      def prototype
+        @prototype ||= new
+      end
+
       def call(method_name, params=nil)
-        new.call(method_name, params)
+        prototype.call(method_name, params)
       end
 
       def before(&block)
