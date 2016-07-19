@@ -1,8 +1,9 @@
 
-libdir = File.dirname(File.dirname(__FILE__)) + '/lib'
+libdir = File.expand_path("../../lib", __dir__)
+
 $LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 
-require "jetra/base"
+require "jetra"
 
 class CustomTestException < Exception ; end
 
@@ -14,12 +15,16 @@ class BaseApplication < Jetra::Base
     @steps << "haltError"
     trace = ["#{boom.class} - #{boom.message}:", *boom.backtrace]
     #puts trace.join("\n\t")
-    halt(msg: "got An Exception", trace: trace, steps: @steps)  
+    halt(msg: "got An Exception", trace: trace, steps: @steps)
+  end
+
+  def haltNotFound
+    @steps << "notFoundInBaseApplication"
+    halt(msg: "route Not Found",steps: @steps)
   end
 
   not_found do
-    @steps << "not_found"
-    {msg: "route Not Found",steps: @steps}
+    haltNotFound
   end
 
   def testRouteUsage

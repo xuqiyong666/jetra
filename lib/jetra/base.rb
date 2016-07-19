@@ -118,10 +118,8 @@ module Jetra
 
       status(0)
 
-      res = error_block!(boom.class, boom)
-      return res if res
+      error_block!(boom.class, boom)
 
-      error_block! Exception, boom
       raise boom
     end
 
@@ -130,46 +128,36 @@ module Jetra
       throw Halt, response
     end
 
-    def filter!(type, base = current_class)
-      filter! type, base.superclass if base.superclass.respond_to?(:filters)
-
-      base.filters[type].each do |args|
+    def filter!(type)
+      current_class.filters[type].each do |args|
         process_route(*args)
       end
     end
 
-    def route!(base = current_class)
+    def route!
 
-      if block = base.routes[@request.method_name.to_sym]
+      if block = current_class.routes[@request.method_name.to_sym]
         process_route do |*args|
           route_eval { block[*args] }
         end
-      end
-
-      if base.superclass.respond_to?(:routes)
-        return route!(base.superclass)
       end
 
       route_missing
     end
 
     def error_block!(error_class, *block_params)
-      base = current_class
-      while base.respond_to?(:errors)
-        unless error_blocks = base.errors[error_class]
-          base = base.superclass
-          next
-        end
 
+      if error_blocks = current_class.errors[error_class]
         error_blocks.reverse_each do |error_block|
           args = [error_block]
           args += [block_params]
           resp = process_route(*args)
-          return resp unless resp.nil? && !error_block
         end
       end
-      return false unless error_class.respond_to? :superclass and error_class.superclass < Exception
-      error_block!(error_class.superclass, *block_params)
+
+      if error_class.respond_to? :superclass and error_class.superclass <= Exception
+        error_block!(error_class.superclass, *block_params)
+      end
     end
 
     def route_eval
@@ -186,18 +174,12 @@ module Jetra
 
     class << self
 
-      attr_reader :routes, :filters, :errors
+      attr_accessor :routes, :filters, :errors
 
       def call(method_name, params=nil)
         new.call(method_name, params)
       end
 
-      def reset!
-        @routes         = {}
-        @filters        = {:before => [], :after => []}
-        @errors         = {}
-      end
-     
       def before(&block)
         add_filter(:before, &block)
       end
@@ -243,11 +225,18 @@ module Jetra
       end
 
       def inherited(subclass)
-        subclass.reset!
+
+        subclass.routes = @routes
+        subclass.filters = @filters
+        subclass.errors = @errors
+
         super
       end
+
     end
 
-    reset!
+    @routes         = {}
+    @filters        = {:before => [], :after => []}
+    @errors         = {}
   end
 end

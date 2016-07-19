@@ -1,12 +1,17 @@
 
-require_relative "base_application"
+require_relative "helpers/base_application"
 
 require "test/unit"
 
-class TestBase < Test::Unit::TestCase
+class TestBaseApplication < Test::Unit::TestCase
+
+  def app
+    BaseApplication
+  end
 
   def testRouteUsage
-    response = BaseApplication.call(:testRouteUsageX)
+
+    response = app.call(:testRouteUsageX)
 
     assertSuccessMsg(response)
 
@@ -14,7 +19,7 @@ class TestBase < Test::Unit::TestCase
   end
 
   def testBeforeAndAfter
-    response = BaseApplication.call(:testBeforeAndAfter)
+    response = app.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
@@ -23,70 +28,70 @@ class TestBase < Test::Unit::TestCase
   end
 
   def testStatus
-    response = BaseApplication.call(:testStatus)
+    response = app.call(:testStatus)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 135)
   end
 
    def testInvoke1
-    response = BaseApplication.call(:testInvoke1)
+    response = app.call(:testInvoke1)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end
   
   def testInvoke2
-    response = BaseApplication.call(:testInvoke2)
+    response = app.call(:testInvoke2)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 194)
   end
 
   def testHalt1
-    response = BaseApplication.call(:testHalt1)
+    response = app.call(:testHalt1)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end  
 
   def testHalt2
-    response = BaseApplication.call(:testHalt2)
+    response = app.call(:testHalt2)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 333)
   end  
 
   def testHalt3
-    response = BaseApplication.call(:testHalt3)
+    response = app.call(:testHalt3)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 0)
   end  
 
   def testHalt4
-    response = BaseApplication.call(:testHalt4)
+    response = app.call(:testHalt4)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, -33)
   end  
 
   def testHalt5
-    response = BaseApplication.call(:testHalt5)
+    response = app.call(:testHalt5)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 444)
   end
 
   def testHalt6
-    response = BaseApplication.call(:testHalt6)
+    response = app.call(:testHalt6)
 
     assert(response.body == nil)
     assertResponseStatus(response, 0)
   end  
 
   def testRuntimeException
-    response = BaseApplication.call(:testRuntimeException)
+    response = app.call(:testRuntimeException)
 
     assert(response.body[:msg] == "got An Exception")
     assertResponseStatus(response, 0)
@@ -95,7 +100,7 @@ class TestBase < Test::Unit::TestCase
   end  
 
   def testCustomTestException
-    response = BaseApplication.call(:testCustomTestException)
+    response = app.call(:testCustomTestException)
 
     assert(response.body[:msg] == "got An Exception")
     assertResponseStatus(response, 0)
@@ -104,7 +109,7 @@ class TestBase < Test::Unit::TestCase
   end
 
   def testCustomTestExceptionForHalt
-    response = BaseApplication.call(:testCustomTestExceptionForHalt)
+    response = app.call(:testCustomTestExceptionForHalt)
 
     assert(response.body[:msg] == "got An CustomTestExceptionForHalt")
     assertResponseStatus(response, 0)
@@ -113,19 +118,19 @@ class TestBase < Test::Unit::TestCase
   end
 
   def testEmptyAction
-    response = BaseApplication.call(:testEmptyAction)
+    response = app.call(:testEmptyAction)
 
     assert(response.body == nil)
     assertResponseStatus(response, 0)
   end  
 
   def testNotFound
-    response = BaseApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
+    response = app.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
     assert(response.body[:msg] == "route Not Found")
     assertResponseStatus(response, 0)
 
-    assert(response.body[:steps] == ["before1", "before2", "not_found", "after1", "after2"])
+    assert(response.body[:steps] == ["before1", "before2", "notFoundInBaseApplication", "after1", "after2"])
   end
 
   def assertResponseStatus(response, status)
