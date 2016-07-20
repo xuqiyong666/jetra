@@ -8,12 +8,49 @@ class TestInterface < Test::Unit::TestCase
 
   def test_params
 
-    p Interface.testParams(name: "jeffrey")
+    param = {name: "jeffrey"}
+
+    response = Interface.testParams(param)
+
+    assertResponseStatus(response, 391)
+
+    assert(response.body[:msg] == "got params #{param}")
   end
 
   def test_not_found
 
-    p Interface.aabbbccccdddeeffg(name: "jeffrey")
+    param = {name: "jeffrey"}
+    response = Interface.aabbbccccdddeeffg(param)
+
+    assertResponseStatus(response, 0)
+
+    assert(response.body[:params] == param)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "notFoundInSecondExtendApplication", "notFoundInExtendApplication", "notFoundInBaseApplication", "after1", "after2", "after3", "after4"])
+  end
+
+  def testSecondExtendRouteUsageX
+    response = Interface.testSecondExtendRouteUsageX
+
+    assertResponseStatus(response, 482)
+
+    assertSuccessMsg(response)
+  end
+
+  def testSecondExtendRoute2
+    response = Interface.testSecondExtendRoute2
+
+    assertResponseStatus(response, 589)
+
+    assertSuccessMsg(response)
+  end
+
+  def assertResponseStatus(response, status)
+    assert(response.status == status)
+  end
+
+  def assertSuccessMsg(response)
+    assert(response.body[:msg] == "success")
   end
 
 end
