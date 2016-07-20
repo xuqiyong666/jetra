@@ -38,8 +38,6 @@ module Jetra
 
     def call!(route, params)
 
-      @env = {}
-
       @request  = Request.new(route, params)
       @response = Response.new
 
@@ -104,17 +102,17 @@ module Jetra
       filter! :before
       route!
     rescue ::Exception => boom
+      gotError = true
       handle_exception!(boom)
     ensure
       begin
         filter! :after
       rescue ::Exception => boom
-        handle_exception!(boom) unless @env["jetra.error"]
+        handle_exception!(boom) unless gotError
       end
     end
 
     def handle_exception!(boom)
-      @env['jetra.error'] = boom
 
       status(0)
 
