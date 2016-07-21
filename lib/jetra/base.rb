@@ -1,4 +1,4 @@
-
+require "jetra/interface"
 
 module Jetra
 
@@ -18,11 +18,19 @@ module Jetra
 
   class Response
     
-    attr_accessor :status, :body
+    attr_reader :status, :body
 
     def initialize(status=0, body=nil)
       @status = status.to_i
       @body = body
+    end
+
+    def status=(value)
+      @status = value
+    end
+
+    def body=(value)
+      @body = value
     end
 
     def finish
@@ -31,6 +39,8 @@ module Jetra
   end
 
   class Base
+
+    attr_accessor :request, :response, :params
 
     def call(route, params)
       dup.call!(route, params)
@@ -50,22 +60,6 @@ module Jetra
 
     def current_class
       self.class
-    end
-
-    def status(value = nil)
-      if value
-        @response.status = value
-      else
-        @response.status
-      end
-    end
-
-    def body(value = nil)
-      if value
-        @response.body = value
-      else
-        @response.body
-      end
     end
 
     def indifferent_params(object)
@@ -90,10 +84,18 @@ module Jetra
 
       if Array === res
         res = res.dup
-        status(res.shift)
-        body(res.shift)
+        
+        if status = res.shift
+          response.status = status
+        end
+
+        if body = res.shift
+          response.body = body
+        end
       else
-        body(res)
+        if res
+          response.body = res
+        end
       end
       nil
     end
@@ -114,7 +116,7 @@ module Jetra
 
     def handle_exception!(boom)
 
-      status(0)
+      response.status = 0
 
       error_block!(boom.class, boom)
 
@@ -237,7 +239,7 @@ module Jetra
 
       def to_interface
 
-        interface = Interface.new
+        interface = Jetra::Interface.new
         @routes.each_key do |symbol|
           eval("interface.define_singleton_method(symbol) do |params={}| ; #{self.name}.call(symbol, params) ; end ")
         end
@@ -253,9 +255,4 @@ module Jetra
     @filters        = {:before => [], :after => []}
     @errors         = {}
   end
-
-  class Interface
-
-  end
-
 end

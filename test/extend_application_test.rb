@@ -9,6 +9,8 @@ class TestExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 385)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "testExtendRouteUsage", "after1", "after2", "after3"])
   end
 
   def testExtendRoute2
@@ -16,6 +18,8 @@ class TestExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 377)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "testExtendRoute2", "after1", "after2", "after3"])
   end
 
   def testRouteUsage

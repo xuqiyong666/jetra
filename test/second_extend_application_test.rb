@@ -9,6 +9,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 482)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testSecondExtendRouteUsage", "after1", "after2", "after3", "after4"])
   end
 
   def testSecondExtendRoute2
@@ -16,6 +18,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 589)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testSecondExtendRoute2", "after1", "after2", "after3", "after4"])
   end
 
 
@@ -24,6 +28,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 385)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testExtendRouteUsage", "after1", "after2", "after3", "after4"])
   end
 
   def testExtendRoute2
@@ -31,6 +37,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 377)
     assertSuccessMsg(response)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testExtendRoute2", "after1", "after2", "after3", "after4"])
   end
 
   def testRouteUsage
@@ -112,7 +120,7 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assert(response.body == nil)
     assertResponseStatus(response, 0)
-  end  
+  end
 
   def testRuntimeException
     response = SecondExtendApplication.call(:testRuntimeException)

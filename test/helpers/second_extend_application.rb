@@ -24,13 +24,19 @@ class SecondExtendApplication < ExtendApplication
   end
 
   def testSecondExtendRouteUsage
-    status(482)
-    successInfoBody
+    @steps << "testSecondExtendRouteUsage"
+    response.status = 482
+    successInfoBody.merge({
+      steps: @steps
+    })
   end
 
   def testSecondExtendRoute2
-    status(589)
-    successInfoBody
+    @steps << "testSecondExtendRoute2"
+    response.status = 589
+    successInfoBody.merge({
+      steps: @steps
+    })
   end
 
 

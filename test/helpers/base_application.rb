@@ -20,7 +20,7 @@ class BaseApplication < Jetra::Base
 
   def haltNotFound
     @steps << "notFoundInBaseApplication"
-    halt(msg: "route Not Found", route: @request.route, params: @params, steps: @steps)
+    halt(msg: "route Not Found", route: @request.route, params: params, steps: @steps)
   end
 
   not_found do
@@ -42,7 +42,8 @@ class BaseApplication < Jetra::Base
   end
 
   def testStatus
-    status(135)
+
+    response.status = 135
     successInfoBody
   end
 
@@ -55,27 +56,27 @@ class BaseApplication < Jetra::Base
   end
 
   def testHalt1
-    body(successInfoBody)
+    response.body = successInfoBody
     halt
   end
 
   def testHalt2
-    status(333)
-    body(successInfoBody)
+    response.status = 333
+    response.body = successInfoBody
     halt
   end
 
   def testHalt3
-    halt(successInfoBody)
+    halt successInfoBody
   end
 
   def testHalt4
-    status(-33)
-    halt(successInfoBody)
+    response.status = -33
+    halt successInfoBody
   end
 
   def testHalt5
-    halt([444, successInfoBody])
+    halt [444, successInfoBody]
   end
 
   def testHalt6
@@ -101,8 +102,8 @@ class BaseApplication < Jetra::Base
   end
 
   def testParams
-    status(391)
-    halt(msg:"got params #{@params}")
+    response.status = 391
+    halt(msg:"got params #{params}")
   end
 
   def testEmptyAction
