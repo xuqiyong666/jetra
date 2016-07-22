@@ -149,10 +149,11 @@ class TestExtendApplication < Test::Unit::TestCase
   def testNotFound
     response = ExtendApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assert(response.body[:msg] == "route Not Found")
     assertResponseStatus(response, 0)
+    
+    assert(response.body[:msg] == "got An Exception")
 
-    assert(response.body[:steps] == ["before1", "before2", "before3", "notFoundInExtendApplication", "notFoundInBaseApplication", "after1", "after2", "after3"])
+    assert(response.body[:steps] == ["before1", "before2", "before3", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3"])
   end
 
   def assertResponseStatus(response, status)

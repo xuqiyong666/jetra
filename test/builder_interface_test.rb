@@ -6,13 +6,13 @@ require "jetra/builder"
 require "jetra/middleware/validater"
 require "jetra/middleware/sample"
 
-BuilderAppication = Jetra::Builder.build do
+builderAppication = Jetra::Builder.build do
   use Jetra::Middleware::Validater
   use Jetra::Middleware::Sample
   run SecondExtendApplication
 end
 
-BuilderInterface = BuilderAppication.to_interface
+BuilderInterface = builderAppication.to_interface
 
 class TestBuilder < Test::Unit::TestCase
 
@@ -57,6 +57,20 @@ class TestBuilder < Test::Unit::TestCase
     assertSuccessMsg(response)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testSecondExtendRoute2", "after1", "after2", "after3", "after4"])
+  end
+
+  def test_not_found
+
+    param = {name: "jeffrey"}
+    response = BuilderInterface.aabbbccccdddeeffg(param)
+
+    assertResponseStatus(response, 0)
+
+    assert(response.body[:msg] == "got An Exception")
+
+    assert(response.body[:params] == param)
+
+    assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "errorBlockInSecondExtendApplication", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3", "after4"])
   end
 
   def assertResponseStatus(response, status)

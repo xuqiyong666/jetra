@@ -11,10 +11,6 @@ class SecondExtendApplication < ExtendApplication
     @steps << "after4"
   end
 
-  not_found do
-    @steps << "notFoundInSecondExtendApplication"
-  end
-
   error do |boom|
     @steps << "errorBlockInSecondExtendApplication"
   end

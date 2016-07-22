@@ -169,7 +169,7 @@ module Jetra
     end
 
     def route_missing
-      raise NotFoundException
+      raise NotFoundException.new("Unknown route: {request.route}")
     end
 
     class << self
@@ -205,10 +205,6 @@ module Jetra
         codes = codes.map { |c| Array(c) }.flatten
         codes << Exception if codes.empty?
         codes.each { |c| (@errors[c] ||= []) << compile!(&block) }
-      end
-
-      def not_found(&block)
-        error(NotFoundException, &block)
       end
 
       def generate_unbound_method(&block)
