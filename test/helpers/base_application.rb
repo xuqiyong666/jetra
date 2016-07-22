@@ -15,7 +15,7 @@ class BaseApplication < Jetra::Base
     @steps << "haltError"
     trace = ["#{boom.class} - #{boom.message}:", *boom.backtrace]
     #puts trace.join("\n\t")
-    halt(msg: "got An Exception", trace: trace, route: @request.route, params: params, steps: @steps)
+    halt(msg: "got An Exception", trace: trace, route: request.route, params: params, steps: @steps)
   end
 
   def testRouteUsage

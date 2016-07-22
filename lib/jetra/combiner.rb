@@ -1,6 +1,5 @@
 require "jetra/interface"
 
-
 module Jetra
 
   class Combiner
@@ -8,21 +7,30 @@ module Jetra
     class << self
 
       def combine(&block)
-        @use = []
+
+        @leader = nil
+        @routes = {}
+
         instance_eval(&block) if block_given?
+
+        fail "missing mount statement" unless @leader
 
         self
       end
 
       def call(route, params={})
-        @app.call(route, params)
+        if app = @routes[route]
+          app.call(route, params)
+        else
+          @leader.call(route, params)
+        end
       end
 
       def to_interface
 
         interface = Jetra::Interface.new
-        routes.each_key do |symbol|
-          eval("interface.define_singleton_method(symbol) do |params={}| ; #{self.name}.call(symbol, params) ; end ")
+        @routes.each_key do |route|
+          eval("interface.define_singleton_method(route) do |params={}| ; #{self.name}.call(route, params) ; end ")
         end
 
         eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; #{self.name}.call(method_name, params) ; end ")
@@ -32,12 +40,17 @@ module Jetra
 
       private 
       
-      def mount(middleware)
-        @use << proc { |app| middleware.new(app) }
+      def mount(app)
+
+        app.routes.each_key do |route|
+          @routes[route] ||= app
+        end
+
+        @leader ||= app
       end
 
-      def run(app)
-        @run = app
+      def leader(app)
+        @leader = app
       end
 
     end

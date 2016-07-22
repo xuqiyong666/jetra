@@ -26,8 +26,8 @@ module Jetra
       def to_interface
 
         interface = Jetra::Interface.new
-        routes.each_key do |symbol|
-          eval("interface.define_singleton_method(symbol) do |params={}| ; #{self.name}.call(symbol, params) ; end ")
+        routes.each_key do |route|
+          eval("interface.define_singleton_method(route) do |params={}| ; #{self.name}.call(route, params) ; end ")
         end
 
         eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; #{self.name}.call(method_name, params) ; end ")

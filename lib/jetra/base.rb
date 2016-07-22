@@ -169,7 +169,7 @@ module Jetra
     end
 
     def route_missing
-      raise NotFoundException.new("Unknown route: {request.route}")
+      raise NotFoundException.new("`#{request.route}` Method not found")
     end
 
     class << self
@@ -230,14 +230,16 @@ module Jetra
         subclass.filters = @filters
         subclass.errors = @errors
 
+        Jetra::Base.reset!
+
         super
       end
 
       def to_interface
 
         interface = Jetra::Interface.new
-        @routes.each_key do |symbol|
-          eval("interface.define_singleton_method(symbol) do |params={}| ; #{self.name}.call(symbol, params) ; end ")
+        @routes.each_key do |route|
+          eval("interface.define_singleton_method(route) do |params={}| ; #{self.name}.call(route, params) ; end ")
         end
 
         eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; #{self.name}.call(method_name, params) ; end ")
@@ -245,10 +247,15 @@ module Jetra
         interface
       end
 
+      def reset!
+        @routes         = {}
+        @filters        = {:before => [], :after => []}
+        @errors         = {}
+      end
+
     end
 
-    @routes         = {}
-    @filters        = {:before => [], :after => []}
-    @errors         = {}
+    reset!
+
   end
 end
