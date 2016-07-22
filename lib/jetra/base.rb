@@ -226,13 +226,43 @@ module Jetra
 
       def inherited(subclass)
 
-        subclass.routes = @routes
-        subclass.filters = @filters
-        subclass.errors = @errors
-
-        Jetra::Base.reset!
+        subclass.routes = copy_routes
+        subclass.filters = copy_filters
+        subclass.errors = copy_errors
 
         super
+      end
+
+      def copy_routes
+        new_routes = {}
+        @routes.each do |key, value|
+          new_routes[key] = value
+        end
+        new_routes
+      end
+
+      def copy_filters
+        new_filters = {}
+        @filters.each do |key, values|
+          new_values = []
+          values.each do |value|
+            new_values << value
+          end
+          new_filters[key] = new_values
+        end
+        new_filters
+      end
+
+      def copy_errors
+        new_errors = {}
+        @errors.each do |key, values|
+          new_values = []
+          values.each do |value|
+            new_values << value
+          end
+          new_errors[key] = new_values
+        end
+        new_errors
       end
 
       def to_interface
@@ -247,15 +277,11 @@ module Jetra
         interface
       end
 
-      def reset!
-        @routes         = {}
-        @filters        = {:before => [], :after => []}
-        @errors         = {}
-      end
-
     end
 
-    reset!
+    @routes         = {}
+    @filters        = {:before => [], :after => []}
+    @errors         = {}
 
   end
 end
