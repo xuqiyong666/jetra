@@ -5,7 +5,7 @@ require "test/unit"
 
 require "jetra/combiner"
 
-CombinerAppication = Jetra::Combiner.combine do
+CombinerAppication = Jetra::Combiner.new do
   mount SecondExtendApplication
   mount AnotherApplication
 end

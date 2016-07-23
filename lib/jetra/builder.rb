@@ -4,53 +4,48 @@ module Jetra
 
   class Builder
 
-    class << self
+    def initialize(&block)
+      @use = []
+      instance_eval(&block) if block_given?
 
-      def build(&block)
-        @use = []
-        instance_eval(&block) if block_given?
+      @app = to_app
+    end
 
-        @app = to_app
+    def call(route, params={})
+      @app.call(route, params)
+    end
 
-        self
+    def routes
+      @run.routes
+    end
+
+    def to_interface
+
+      interface = Jetra::Interface.new(self)
+      routes.each_key do |route|
+        eval("interface.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
       end
 
-      def call(route, params={})
-        @app.call(route, params)
-      end
+      eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; @app.call(method_name, params) ; end ")
 
-      def routes
-        @run.routes
-      end
+      interface
+    end
 
-      def to_interface
+    private 
+    
+    def use(middleware)
+      @use << proc { |app| middleware.new(app) }
+    end
 
-        interface = Jetra::Interface.new
-        routes.each_key do |route|
-          eval("interface.define_singleton_method(route) do |params={}| ; #{self.name}.call(route, params) ; end ")
-        end
+    def run(app)
+      @run = app
+    end
 
-        eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; #{self.name}.call(method_name, params) ; end ")
-
-        interface
-      end
-
-      private 
-      
-      def use(middleware)
-        @use << proc { |app| middleware.new(app) }
-      end
-
-      def run(app)
-        @run = app
-      end
-
-      def to_app
-        app = @run
-        fail "missing run statement" unless app
-        app = @use.reverse.inject(app) { |a,e| e[a] }
-        app
-      end
+    def to_app
+      app = @run
+      fail "missing run statement" unless app
+      app = @use.reverse.inject(app) { |a,e| e[a] }
+      app
     end
   end
 end

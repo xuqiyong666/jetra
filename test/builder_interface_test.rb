@@ -6,7 +6,7 @@ require "jetra/builder"
 require "jetra/middleware/validater"
 require "jetra/middleware/sample"
 
-builderAppication = Jetra::Builder.build do
+builderAppication = Jetra::Builder.new do
   use Jetra::Middleware::Validater
   use Jetra::Middleware::Sample
   run SecondExtendApplication

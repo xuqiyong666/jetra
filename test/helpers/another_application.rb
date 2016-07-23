@@ -1,5 +1,8 @@
+libdir = File.expand_path("../../lib", __dir__)
 
-require_relative "base_application"
+$LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
+
+require "jetra"
 
 class AnotherApplication < Jetra::Base
 
