@@ -27,10 +27,12 @@ module Jetra
 
     def status=(value)
       @status = value
+      nil
     end
 
     def body=(value)
       @body = value
+      nil
     end
 
     def finish
@@ -51,31 +53,31 @@ module Jetra
       @request  = Request.new(route, params)
       @response = Response.new
 
-      @params   = indifferent_params(@request.params)
+      @params   = indifferentParams(@request.params)
 
       invoke { dispatch! }
 
       @response.finish
     end
 
-    def current_class
+    def currentClass
       self.class
     end
 
-    def indifferent_params(object)
+    def indifferentParams(object)
       case object
       when Hash
-        new_hash = indifferent_hash
-        object.each { |key, value| new_hash[key] = indifferent_params(value) }
-        new_hash
+        newHash = indifferentHash
+        object.each { |key, value| newHash[key] = indifferentParams(value) }
+        newHash
       when Array
-        object.map { |item| indifferent_params(item) }
+        object.map { |item| indifferentParams(item) }
       else
         object
       end
     end
 
-    def indifferent_hash
+    def indifferentHash
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
@@ -105,20 +107,20 @@ module Jetra
       route!
     rescue ::Exception => boom
       gotError = true
-      handle_exception!(boom)
+      handleException!(boom)
     ensure
       begin
         filter! :after
       rescue ::Exception => boom
-        handle_exception!(boom) unless gotError
+        handleException!(boom) unless gotError
       end
     end
 
-    def handle_exception!(boom)
+    def handleException!(boom)
 
       response.status = 0
 
-      error_block!(boom.class, boom)
+      errorBlock!(boom.class, boom)
 
       raise boom
     end
@@ -129,47 +131,79 @@ module Jetra
     end
 
     def filter!(type)
-      current_class.filters[type].each do |args|
-        process_route(*args)
+      currentClass.filters[type].each do |args|
+        processRoute(*args)
       end
     end
 
     def route!
 
-      if block = current_class.routes[@request.route.to_sym]
-        process_route do |*args|
-          route_eval { block[*args] }
+      if block = currentClass.routes[@request.route.to_sym]
+        processRoute do |*args|
+          routeEval { block[*args] }
         end
       end
 
-      route_missing
+      routeMissing
     end
 
-    def error_block!(error_class, *block_params)
+    def errorBlock!(errorClass, *blockParams)
 
-      if error_blocks = current_class.errors[error_class]
-        error_blocks.reverse_each do |error_block|
-          args = [error_block]
-          args += [block_params]
-          resp = process_route(*args)
+      if errorBlocks = currentClass.errors[errorClass]
+        errorBlocks.reverse_each do |errorBlock|
+          args = [errorBlock]
+          args += [blockParams]
+          resp = processRoute(*args)
         end
       end
 
-      if error_class.respond_to? :superclass and error_class.superclass <= Exception
-        error_block!(error_class.superclass, *block_params)
+      if errorClass.respond_to? :superclass and errorClass.superclass <= Exception
+        errorBlock!(errorClass.superclass, *blockParams)
       end
     end
 
-    def route_eval
+    def routeEval
       throw Halt, yield
     end
 
-    def process_route(block=nil,values=[])
+    def processRoute(block=nil,values=[])
       block ? block[self,values] : yield(self,values)
     end
 
-    def route_missing
-      raise NotFoundException.new("`#{request.route}` Method not found")
+    def routeMissing
+      raise NotFoundException.new("route not found")
+    end
+
+    def successResponse(body, args = {status: 1})
+      status = args[:status]
+      raise "status code must >= 1 when using success" if status < 1
+
+      if body.class == String
+        body = {msg: body}
+      end
+
+      response.body = body
+      response.status = status
+    end
+
+    def failureResponse(body, args = {status: -1})
+      status = args[:status]
+      raise "status code must <= -1 when using failure" if status > -1
+
+      if body === String
+        body = {msg: body}
+      end
+
+      response.body = body
+      response.status = status
+    end
+
+    def haltSuccess(body, args = {status: 1})
+      successResponse(body, args)
+    end
+
+    def haltFailure(body, args ={status: -1})
+      failureResponse(body, args)
     end
 
     class << self
@@ -185,14 +219,14 @@ module Jetra
       end
 
       def before(&block)
-        add_filter(:before, &block)
+        addFilter(:before, &block)
       end
 
       def after(&block)
-        add_filter(:after, &block)
+        addFilter(:after, &block)
       end
 
-      def add_filter(type, &block)
+      def addFilter(type, &block)
         @filters[type] << compile!(&block)
       end
 
@@ -207,62 +241,62 @@ module Jetra
         codes.each { |c| (@errors[c] ||= []) << compile!(&block) }
       end
 
-      def generate_unbound_method(&block)
-        method_name = :id  #any symbol is ok.
-        define_method(method_name, &block)
-        method = instance_method method_name
-        remove_method method_name
+      def generateUnboundMethod(&block)
+        methodName = :id  #any symbol is ok.
+        define_method(methodName, &block)
+        method = instance_method methodName
+        remove_method methodName
         method
       end
 
       def compile!(&block)
 
-        unbound_method = generate_unbound_method(&block)
+        unboundMethod = generateUnboundMethod(&block)
 
         block.arity != 0 ?
-          proc { |a,p| unbound_method.bind(a).call(*p) } :
-          proc { |a,p| unbound_method.bind(a).call }
+          proc { |a,p| unboundMethod.bind(a).call(*p) } :
+          proc { |a,p| unboundMethod.bind(a).call }
       end
 
       def inherited(subclass)
 
-        subclass.routes = copy_routes
-        subclass.filters = copy_filters
-        subclass.errors = copy_errors
+        subclass.routes = copyRoutes
+        subclass.filters = copyFilters
+        subclass.errors = copyErrors
 
         super
       end
 
-      def copy_routes
-        new_routes = {}
+      def copyRoutes
+        newRoutes = {}
         @routes.each do |key, value|
-          new_routes[key] = value
+          newRoutes[key] = value
         end
-        new_routes
+        newRoutes
       end
 
-      def copy_filters
-        new_filters = {}
+      def copyFilters
+        newFilters = {}
         @filters.each do |key, values|
-          new_values = []
+          newValues = []
           values.each do |value|
-            new_values << value
+            newValues << value
           end
-          new_filters[key] = new_values
+          newFilters[key] = newValues
         end
-        new_filters
+        newFilters
       end
 
-      def copy_errors
-        new_errors = {}
+      def copyErrors
+        newErrors = {}
         @errors.each do |key, values|
-          new_values = []
+          newValues = []
           values.each do |value|
-            new_values << value
+            newValues << value
           end
-          new_errors[key] = new_values
+          newErrors[key] = newValues
         end
-        new_errors
+        newErrors
       end
 
       def to_interface
@@ -272,16 +306,25 @@ module Jetra
           eval("interface.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
         end
 
-        eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; @app.call(method_name, params) ; end ")
+        eval("interface.define_singleton_method(:method_missing) do |methodName, params={}| ; @app.call(methodName, params) ; end ")
 
         interface
       end
-
     end
 
     @routes         = {}
     @filters        = {:before => [], :after => []}
     @errors         = {}
+
+    error do |boom|
+      if boom.class == Jetra::NotFoundException
+        trace = []
+      else
+        trace = boom.backtrace
+      end
+      response.body = {class: boom.class.to_s, msg: boom.message.to_s, route: request.route, params: params, trace: trace}
+      halt
+    end
 
   end
 end

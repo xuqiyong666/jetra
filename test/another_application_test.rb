@@ -32,7 +32,12 @@ class TestAnotherApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 0)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert(response.body[:class] == "Jetra::NotFoundException")
+
+    assert(response.body[:msg] == "route not found")
+
+    assert(response.body[:trace] == [])
+
   end
 
   def testSayHelloWithInterface
@@ -60,7 +65,11 @@ class TestAnotherApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 0)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert(response.body[:class] == "Jetra::NotFoundException")
+
+    assert(response.body[:msg] == "route not found")
+
+    assert(response.body[:trace] == [])
   end
 
   def assertResponseStatus(response, status)
