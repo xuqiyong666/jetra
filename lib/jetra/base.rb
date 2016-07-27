@@ -191,11 +191,11 @@ module Jetra
     end
 
     def haltSuccess(body, args = {status: 1})
-      successResponse(body, args)
+      halt successResponse(body, args)
     end
 
     def haltFailure(body, args ={status: -1})
-      failureResponse(body, args)
+      halt failureResponse(body, args)
     end
 
     class << self
