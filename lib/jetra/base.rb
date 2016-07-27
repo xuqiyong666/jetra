@@ -18,21 +18,11 @@ module Jetra
 
   class Response
     
-    attr_reader :status, :body
+    attr_accessor :status, :body
 
     def initialize(status=0, body=nil)
       @status = status.to_i
       @body = body
-    end
-
-    def status=(value)
-      @status = value
-      nil
-    end
-
-    def body=(value)
-      @body = value
-      nil
     end
 
     def finish
@@ -184,6 +174,7 @@ module Jetra
 
       response.body = body
       response.status = status
+      nil
     end
 
     def failureResponse(body, args = {status: -1})
@@ -196,6 +187,7 @@ module Jetra
 
       response.body = body
       response.status = status
+      nil
     end
 
     def haltSuccess(body, args = {status: 1})
