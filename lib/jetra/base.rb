@@ -181,7 +181,7 @@ module Jetra
       status = args[:status]
       raise "status code must <= -1 when using failure" if status > -1
 
-      if body === String
+      if body.class == String
         body = {msg: body}
       end
 
@@ -314,7 +314,7 @@ module Jetra
       else
         trace = boom.backtrace
       end
-      response.body = {class: boom.class.to_s, msg: boom.message.to_s, route: request.route, params: params, trace: trace}
+      response.body = {msg: "#{boom.class} - #{boom.message}", class: boom.class.to_s, route: request.route, params: params, trace: trace}
       halt
     end
 

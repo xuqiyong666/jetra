@@ -34,10 +34,19 @@ class TestAnotherApplication < Test::Unit::TestCase
     
     assert(response.body[:class] == "Jetra::NotFoundException")
 
-    assert(response.body[:msg] == "route not found")
+    assert(response.body[:msg] == "Jetra::NotFoundException - route not found")
 
     assert(response.body[:trace] == [])
 
+  end
+
+  def testFailureAip
+
+    response = AnotherApplication.call(:failureApi)
+
+    assertResponseStatus(response, -1)
+    
+    assert(response.body[:msg] == "failureApi Message")
   end
 
   def testSayHelloWithInterface
@@ -67,9 +76,18 @@ class TestAnotherApplication < Test::Unit::TestCase
     
     assert(response.body[:class] == "Jetra::NotFoundException")
 
-    assert(response.body[:msg] == "route not found")
+    assert(response.body[:msg] == "Jetra::NotFoundException - route not found")
 
     assert(response.body[:trace] == [])
+  end
+
+  def testFailureAipWithInterface
+
+    response = AnotherInterface.failureApi
+
+    assertResponseStatus(response, -1)
+    
+    assert(response.body[:msg] == "failureApi Message")
   end
 
   def assertResponseStatus(response, status)

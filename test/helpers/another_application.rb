@@ -17,8 +17,14 @@ class AnotherApplication < Jetra::Base
     successResponse "hi, #{name}"
   end
 
+  def failureApi
+    haltFailure "failureApi Message"
+  end
+
   route :sayHello do sayHelloX end
 
   route :sayHi
+
+  route :failureApi
 
 end
