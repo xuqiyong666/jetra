@@ -1,4 +1,4 @@
-require "jetra/interface"
+require "jetra/application"
 
 module Jetra
 
@@ -291,17 +291,18 @@ module Jetra
         newErrors
       end
 
-      def to_interface
+      def to_app
 
-        interface = Jetra::Interface.new(self)
+        newApp = Jetra::Application.new(self)
         @routes.each_key do |route|
-          eval("interface.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
+          eval("newApp.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
         end
 
-        eval("interface.define_singleton_method(:method_missing) do |methodName, params={}| ; @app.call(methodName, params) ; end ")
+        eval("newApp.define_singleton_method(:method_missing) do |methodName, params={}| ; @app.call(methodName, params) ; end ")
 
-        interface
+        newApp
       end
+      
     end
 
     @routes         = {}

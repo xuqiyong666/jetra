@@ -5,18 +5,18 @@ require "test/unit"
 
 require "jetra/combiner"
 
-CombinerAppication = Jetra::Combiner.new do
+CombinerApplication = Jetra::Combiner.new do
   mount SecondExtendApplication
   mount AnotherApplication
 end
 
-CombinerInterface = CombinerAppication.to_interface
+CombinerApp = CombinerApplication.to_app
 
-class TestCombinerApplication < Test::Unit::TestCase
+class TestCombinerApp < Test::Unit::TestCase
 
   def testParams
     params = {name: "jeffrey"}
-    response = CombinerAppication.call(:testParams, params)
+    response = CombinerApplication.call(:testParams, params)
 
     assertResponseStatus(response, 391)
 
@@ -24,14 +24,14 @@ class TestCombinerApplication < Test::Unit::TestCase
   end
 
   def testStatus
-    response = CombinerAppication.call(:testStatus)
+    response = CombinerApplication.call(:testStatus)
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 135)
   end
 
   def testExtendRoute2
-    response = CombinerAppication.call(:testExtendRoute2)
+    response = CombinerApplication.call(:testExtendRoute2)
 
     assertResponseStatus(response, 377)
     assertSuccessMsg(response)
@@ -40,7 +40,7 @@ class TestCombinerApplication < Test::Unit::TestCase
   end
 
   def testSecondExtendRoute2
-    response = CombinerAppication.call(:testSecondExtendRoute2)
+    response = CombinerApplication.call(:testSecondExtendRoute2)
 
     assertResponseStatus(response, 589)
     assertSuccessMsg(response)
@@ -49,7 +49,7 @@ class TestCombinerApplication < Test::Unit::TestCase
   end
 
   def testNotFound
-    response = CombinerAppication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
+    response = CombinerApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
     assertResponseStatus(response, 0)
     
@@ -59,7 +59,7 @@ class TestCombinerApplication < Test::Unit::TestCase
   def testSayHello
 
     params = {name: "jeffrey"}
-    response = CombinerAppication.call(:sayHello, params)
+    response = CombinerApplication.call(:sayHello, params)
 
     assertResponseStatus(response, 1)
 
@@ -69,31 +69,31 @@ class TestCombinerApplication < Test::Unit::TestCase
   def testSayHi
 
     params = {name: "peter"}
-    response = CombinerAppication.call(:sayHi, params)
+    response = CombinerApplication.call(:sayHi, params)
 
     assertResponseStatus(response, 1)
 
     assert(response.body[:msg] == "hi, #{params[:name]}")
   end
 
-  def testParamsWithInterface
+  def testParamsWithApplication
     params = {name: "jeffrey"}
-    response = CombinerInterface.testParams(params)
+    response = CombinerApp.testParams(params)
 
     assertResponseStatus(response, 391)
 
     assert(response.body[:msg] == "got params #{params}")
   end
 
-  def testStatusWithInterface
-    response = CombinerInterface.testStatus
+  def testStatusWithApplication
+    response = CombinerApp.testStatus
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 135)
   end
 
-  def testExtendRoute2WithInterface
-    response = CombinerInterface.testExtendRoute2
+  def testExtendRoute2WithApplication
+    response = CombinerApp.testExtendRoute2
 
     assertResponseStatus(response, 377)
     assertSuccessMsg(response)
@@ -101,8 +101,8 @@ class TestCombinerApplication < Test::Unit::TestCase
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testExtendRoute2", "after1", "after2", "after3", "after4"])
   end
 
-  def testSecondExtendRoute2WithInterface
-    response = CombinerInterface.testSecondExtendRoute2
+  def testSecondExtendRoute2WithApplication
+    response = CombinerApp.testSecondExtendRoute2
 
     assertResponseStatus(response, 589)
     assertSuccessMsg(response)
@@ -110,28 +110,28 @@ class TestCombinerApplication < Test::Unit::TestCase
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testSecondExtendRoute2", "after1", "after2", "after3", "after4"])
   end
 
-  def testNotFoundWithInterface
-    response = CombinerInterface.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd
+  def testNotFoundWithApplication
+    response = CombinerApp.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd
 
     assertResponseStatus(response, 0)
     
     assert(response.body[:msg] == "got An Exception")
   end
 
-  def testSayHelloWithInterface
+  def testSayHelloWithApplication
 
     params = {name: "jeffrey"}
-    response = CombinerInterface.sayHello(params)
+    response = CombinerApp.sayHello(params)
 
     assertResponseStatus(response, 1)
 
     assert(response.body[:msg] == "hello, #{params[:name]}")
   end
 
-  def testSayHiWithInterface
+  def testSayHiWithApplication
 
     params = {name: "peter"}
-    response = CombinerInterface.sayHi(params)
+    response = CombinerApp.sayHi(params)
 
     assertResponseStatus(response, 1)
 

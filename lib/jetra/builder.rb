@@ -1,4 +1,4 @@
-require "jetra/interface"
+require "jetra/application"
 
 module Jetra
 
@@ -8,7 +8,7 @@ module Jetra
       @use = []
       instance_eval(&block) if block_given?
 
-      @app = to_app
+      @app = build_app
     end
 
     def call(route, params={})
@@ -19,16 +19,16 @@ module Jetra
       @run.routes
     end
 
-    def to_interface
+    def to_app
 
-      interface = Jetra::Interface.new(self)
+      newApp = Jetra::Application.new(self)
       routes.each_key do |route|
-        eval("interface.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
+        eval("newApp.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
       end
 
-      eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; @app.call(method_name, params) ; end ")
+      eval("newApp.define_singleton_method(:method_missing) do |methodName, params={}| ; @app.call(methodName, params) ; end ")
 
-      interface
+      newApp
     end
 
     private 
@@ -41,7 +41,7 @@ module Jetra
       @run = app
     end
 
-    def to_app
+    def build_app
       app = @run
       fail "missing run statement" unless app
       app = @use.reverse.inject(app) { |a,e| e[a] }

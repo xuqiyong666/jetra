@@ -1,6 +1,6 @@
 module Jetra
 
-  class Interface
+  class Application
 
   	def initialize(app)
   		@app = app

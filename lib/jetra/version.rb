@@ -1,5 +1,5 @@
 module Jetra
 
-  Version = "0.0.3"
+  Version = "1.0.1"
 
 end

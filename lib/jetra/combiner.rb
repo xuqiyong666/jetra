@@ -1,4 +1,4 @@
-require "jetra/interface"
+require "jetra/application"
 
 module Jetra
 
@@ -26,16 +26,16 @@ module Jetra
       @routes
     end
 
-    def to_interface
+    def to_app
 
-      interface = Jetra::Interface.new(self)
+      newApp = Jetra::Application.new(self)
       routes.each_key do |route|
-        eval("interface.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
+        eval("newApp.define_singleton_method(route) do |params={}| ; @app.call(route, params) ; end ")
       end
 
-      eval("interface.define_singleton_method(:method_missing) do |method_name, params={}| ; @app.call(method_name, params) ; end ")
+      eval("newApp.define_singleton_method(:method_missing) do |method_name, params={}| ; @app.call(method_name, params) ; end ")
 
-      interface
+      newApp
     end
 
     private 
@@ -47,10 +47,6 @@ module Jetra
       end
 
       @leader ||= app
-    end
-
-    def leader(app)
-      @leader = app
     end
 
   end

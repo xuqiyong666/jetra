@@ -13,7 +13,11 @@ module Jetra
 
         #you can do something you like before call
 
+        #puts "sample middleware call start.."
+
         response = @app.call(route, params)
+
+        #puts "sample middleware call finish.."
 
         #you can do something you like after call
 

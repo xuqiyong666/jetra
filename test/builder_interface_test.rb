@@ -12,13 +12,13 @@ builderAppication = Jetra::Builder.new do
   run SecondExtendApplication
 end
 
-BuilderInterface = builderAppication.to_interface
+BuilderApp = builderAppication.to_app
 
 class TestBuilder < Test::Unit::TestCase
 
   def testParams
     params = {name: "jeffrey"}
-    response = BuilderInterface.testParams(params)
+    response = BuilderApp.testParams(params)
 
     assertResponseStatus(response, 391)
 
@@ -27,7 +27,7 @@ class TestBuilder < Test::Unit::TestCase
 
   def testErrorParams
     params = "abc"
-    response = BuilderInterface.testParams(params)
+    response = BuilderApp.testParams(params)
 
     assertResponseStatus(response, 0)
 
@@ -35,14 +35,14 @@ class TestBuilder < Test::Unit::TestCase
   end
 
   def testStatus
-    response = BuilderInterface.testStatus
+    response = BuilderApp.testStatus
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 135)
   end
 
   def testExtendRoute2
-    response = BuilderInterface.testExtendRoute2
+    response = BuilderApp.testExtendRoute2
 
     assertResponseStatus(response, 377)
     assertSuccessMsg(response)
@@ -51,7 +51,7 @@ class TestBuilder < Test::Unit::TestCase
   end
 
   def testSecondExtendRoute2
-    response = BuilderInterface.testSecondExtendRoute2
+    response = BuilderApp.testSecondExtendRoute2
 
     assertResponseStatus(response, 589)
     assertSuccessMsg(response)
@@ -62,7 +62,7 @@ class TestBuilder < Test::Unit::TestCase
   def test_not_found
 
     param = {name: "jeffrey"}
-    response = BuilderInterface.aabbbccccdddeeffg(param)
+    response = BuilderApp.aabbbccccdddeeffg(param)
 
     assertResponseStatus(response, 0)
 

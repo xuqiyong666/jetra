@@ -2,15 +2,15 @@ require_relative "helpers/second_extend_application"
 
 require "test/unit"
 
-Interface = SecondExtendApplication.to_interface
+Application = SecondExtendApplication.to_app
 
-class TestInterface < Test::Unit::TestCase
+class TestApplication < Test::Unit::TestCase
 
   def test_params
 
     param = {name: "jeffrey"}
 
-    response = Interface.testParams(param)
+    response = Application.testParams(param)
 
     assertResponseStatus(response, 391)
 
@@ -20,7 +20,7 @@ class TestInterface < Test::Unit::TestCase
   def test_not_found
 
     param = {name: "jeffrey"}
-    response = Interface.aabbbccccdddeeffg(param)
+    response = Application.aabbbccccdddeeffg(param)
 
     assertResponseStatus(response, 0)
 
@@ -32,7 +32,7 @@ class TestInterface < Test::Unit::TestCase
   end
 
   def testSecondExtendRouteUsageX
-    response = Interface.testSecondExtendRouteUsageX
+    response = Application.testSecondExtendRouteUsageX
 
     assertResponseStatus(response, 482)
 
@@ -40,7 +40,7 @@ class TestInterface < Test::Unit::TestCase
   end
 
   def testSecondExtendRoute2
-    response = Interface.testSecondExtendRoute2
+    response = Application.testSecondExtendRoute2
 
     assertResponseStatus(response, 589)
 

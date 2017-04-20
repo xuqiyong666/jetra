@@ -51,7 +51,7 @@ ComplexApplication = Jetra::Combiner.new do
 end
 
 
-ComplexInterface = ComplexApplication.to_interface
+ComplexApp = ComplexApplication.to_app
 
 class TestComplex < Test::Unit::TestCase
 
@@ -200,144 +200,144 @@ class TestComplex < Test::Unit::TestCase
   end
 
 
-  def testInvokeOneWithInterface
+  def testInvokeOneWithApplication
 
-    response = ComplexInterface.invokeOne
-
-    assertResponseStatus(response, 8001)
-
-    assertSuccessMsg(response)
-  end
-
-  def testInvokeOneXWithInterface
-
-    response = ComplexInterface.invokeOneX
+    response = ComplexApp.invokeOne
 
     assertResponseStatus(response, 8001)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeTwoWithInterface
+  def testInvokeOneXWithApplication
 
-    response = ComplexInterface.invokeTwo
+    response = ComplexApp.invokeOneX
+
+    assertResponseStatus(response, 8001)
+
+    assertSuccessMsg(response)
+  end
+
+  def testInvokeTwoWithApplication
+
+    response = ComplexApp.invokeTwo
 
     assertResponseStatus(response, 8002)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeTwoXWithInterface
+  def testInvokeTwoXWithApplication
 
-    response = ComplexInterface.invokeTwoX
+    response = ComplexApp.invokeTwoX
 
     assertResponseStatus(response, 8002)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeThreeWithInterface
+  def testInvokeThreeWithApplication
 
-    response = ComplexInterface.invokeThree
-
-    assertResponseStatus(response, 8003)
-
-    assertSuccessMsg(response)
-  end
-
-  def testInvokeThreeXWithInterface
-
-    response = ComplexInterface.invokeThreeX
+    response = ComplexApp.invokeThree
 
     assertResponseStatus(response, 8003)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeFourWithInterface
+  def testInvokeThreeXWithApplication
 
-    response = ComplexInterface.invokeFour
+    response = ComplexApp.invokeThreeX
+
+    assertResponseStatus(response, 8003)
+
+    assertSuccessMsg(response)
+  end
+
+  def testInvokeFourWithApplication
+
+    response = ComplexApp.invokeFour
 
     assertResponseStatus(response, 8004)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeFourXWithInterface
+  def testInvokeFourXWithApplication
 
-    response = ComplexInterface.invokeFourX
+    response = ComplexApp.invokeFourX
 
     assertResponseStatus(response, 8004)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeFiveWithInterface
+  def testInvokeFiveWithApplication
 
-    response = ComplexInterface.invokeFive
-
-    assertResponseStatus(response, 8005)
-
-    assertSuccessMsg(response)
-  end
-
-  def testInvokeFiveXWithInterface
-
-    response = ComplexInterface.invokeFiveX
+    response = ComplexApp.invokeFive
 
     assertResponseStatus(response, 8005)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeSixWithInterface
+  def testInvokeFiveXWithApplication
 
-    response = ComplexInterface.invokeSix
+    response = ComplexApp.invokeFiveX
+
+    assertResponseStatus(response, 8005)
+
+    assertSuccessMsg(response)
+  end
+
+  def testInvokeSixWithApplication
+
+    response = ComplexApp.invokeSix
 
     assertResponseStatus(response, 8006)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeSixXWithInterface
+  def testInvokeSixXWithApplication
 
-    response = ComplexInterface.invokeSixX
+    response = ComplexApp.invokeSixX
 
     assertResponseStatus(response, 8006)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeSevenWithInterface
+  def testInvokeSevenWithApplication
 
-    response = ComplexInterface.invokeSeven
-
-    assertResponseStatus(response, 8007)
-
-    assertSuccessMsg(response)
-  end
-
-  def testInvokeSevenXWithInterface
-
-    response = ComplexInterface.invokeSevenX
+    response = ComplexApp.invokeSeven
 
     assertResponseStatus(response, 8007)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeEightWithInterface
+  def testInvokeSevenXWithApplication
 
-    response = ComplexInterface.invokeEight
+    response = ComplexApp.invokeSevenX
+
+    assertResponseStatus(response, 8007)
+
+    assertSuccessMsg(response)
+  end
+
+  def testInvokeEightWithApplication
+
+    response = ComplexApp.invokeEight
 
     assertResponseStatus(response, 8008)
 
     assertSuccessMsg(response)
   end
 
-  def testInvokeEightXWithInterface
+  def testInvokeEightXWithApplication
 
-    response = ComplexInterface.invokeEightX
+    response = ComplexApp.invokeEightX
 
     assertResponseStatus(response, 8008)
 

@@ -3,7 +3,7 @@ require_relative "helpers/another_application"
 
 require "test/unit"
 
-AnotherInterface = AnotherApplication.to_interface
+AnotherApp = AnotherApplication.to_app
 
 class TestAnotherApplication < Test::Unit::TestCase
 
@@ -49,28 +49,28 @@ class TestAnotherApplication < Test::Unit::TestCase
     assert(response.body[:msg] == "failureApi Message")
   end
 
-  def testSayHelloWithInterface
+  def testSayHelloWithApplication
 
     params = {name: "jeffrey"}
-    response = AnotherInterface.sayHello(params)
+    response = AnotherApp.sayHello(params)
 
     assertResponseStatus(response, 1)
 
     assert(response.body[:msg] == "hello, #{params[:name]}")
   end
 
-  def testSayHiWithInterface
+  def testSayHiWithApplication
 
     params = {name: "peter"}
-    response = AnotherInterface.sayHi(params)
+    response = AnotherApp.sayHi(params)
 
     assertResponseStatus(response, 1)
 
     assert(response.body[:msg] == "hi, #{params[:name]}")
   end
 
-  def testNotFoundWithInterface
-    response = AnotherInterface.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd(xx: 123)
+  def testNotFoundWithApplication
+    response = AnotherApp.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd(xx: 123)
 
     assertResponseStatus(response, 0)
     
@@ -81,9 +81,9 @@ class TestAnotherApplication < Test::Unit::TestCase
     assert(response.body[:trace] == [])
   end
 
-  def testFailureAipWithInterface
+  def testFailureAipWithApplication
 
-    response = AnotherInterface.failureApi
+    response = AnotherApp.failureApi
 
     assertResponseStatus(response, -1)
     

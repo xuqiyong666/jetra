@@ -1,3 +1,7 @@
+libdir = File.expand_path("../../lib", __dir__)
+$LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
+
+require "jetra"
 
 require_relative "base_application"
 

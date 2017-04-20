@@ -5,6 +5,10 @@ require "jetra"
 
 class EightApplication < Jetra::Base
 
+  # before do 
+  #   puts "EightApplication #{request.route} #{params.inspect}"
+  # end
+
   def invokeEight
     response.status = 8008
     successInfoBody
