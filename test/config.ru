@@ -55,7 +55,10 @@ complexApplication = Jetra::Combiner.new do
 end
 
 
-RackApp = Jetra::RackAdapter.new(complexApplication)
+RackApp = Jetra::RackAdapter.new(complexApplication) do |request, params|
+  params[:appkey] = request.get_header("HTTP_APPKEY")
+  params[:appsecret] = request.get_header("HTTP_APPSECRET")
+end
 
 use Rack::Deflater
 
