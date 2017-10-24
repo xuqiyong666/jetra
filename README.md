@@ -1,6 +1,6 @@
 # 介绍
 
-jetra是一个用于编写接口的迷你框架，参考了sinatra的内部逻辑。sinatra封装了rack，所以只能用于写http接口。jetra可以理解为移除了rack层的sinatra。
+jetra是一个用于编写接口的微型框架，参考了sinatra的内部逻辑。sinatra封装了rack，所以只能用于写http接口。jetra可以理解为移除了rack层的sinatra。
 
 ## 代码示例
 
@@ -27,11 +27,14 @@ end
 
 ```ruby
 
-ApiInterface.call(:greeting) #=> #<Jetra::Response:0x007fe1b68a5af8 @status=0, @body="hello, world!">
+ApiInterface.call(:greeting) 
+#=> #<Jetra::Response:0x007fe1b68a5af8 @status=0, @body="hello, world!">
 
-ApiInterface.call(:repeat, msg: "I am fine") #=> #<Jetra::Response:0x007fc1a8897be8 @status=0, @body="you said `I am fine`">
+ApiInterface.call(:repeat, msg: "I am fine") 
+#=> #<Jetra::Response:0x007fc1a8897be8 @status=0, @body="you said `I am fine`">
 
-ApiInterface.call(:repeat) #=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
+ApiInterface.call(:repeat) 
+#=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
 ```
 
 或者使用to_app，方法调用更舒服
@@ -40,14 +43,17 @@ ApiInterface.call(:repeat) #=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @bo
 
 App = ApiInterface.to_app
 
-App.greeting #=> #<Jetra::Response:0x007fa4b4093868 @status=0, @body="hello, world!">
+App.greeting 
+#=> #<Jetra::Response:0x007fa4b4093868 @status=0, @body="hello, world!">
 
-App.repeat(msg: "I am great") #=> #<Jetra::Response:0x007fed3508ec90 @status=0, @body="you said `I am great`">
+App.repeat(msg: "I am great") 
+#=> #<Jetra::Response:0x007fed3508ec90 @status=0, @body="you said `I am great`">
 
-App.repeat #=> #<Jetra::Response:0x007fd92f88dc08 @status=0, @body="you said `nothing`">
+App.repeat 
+#=> #<Jetra::Response:0x007fd92f88dc08 @status=0, @body="you said `nothing`">
 ```
 
-以上示例是程序内部调用，那么怎么才能支持远程调用？
+以上示例是程序内部调用，那么怎么才能支持接口的远程调用？
 
 方法1: 转化为基于rack的http接口
 
