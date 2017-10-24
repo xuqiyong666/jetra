@@ -37,7 +37,7 @@ ApiInterface.call(:repeat)
 #=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
 ```
 
-或者使用to_app，方法调用更舒服
+或者使用to_app，让方法调用更舒服
 
 ```ruby
 
@@ -68,7 +68,8 @@ Rack::Server.start(
 )
 ```
 
-然后打开浏览器访问接口地址 http://localhost:9292/repeat?msg=work?
+然后打开浏览器访问接口地址 http://localhost:9292/repeat?msg=work
+
 tips: 你可以使用你喜欢的Thin/Unicorn/Puma来运行Rack程序。
 
 方法2: 转化为thrift接口
