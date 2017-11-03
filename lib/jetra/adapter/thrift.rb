@@ -1,12 +1,16 @@
 
+require 'thrift'
+
+require "jetra/adapter/thrift/jetra_types"
+require "jetra/adapter/thrift/jetra_constants"
+require "jetra/adapter/thrift/service"
+
 require "set"
 require 'json'
 
 module Jetra
 
-  class RackAdapter
-
-    include Rack::Utils
+  class ThriftAdapter
 
     def initialize(app, &custom_block)
       @app = app
@@ -20,19 +24,15 @@ module Jetra
 
     end
 
-    def call(env)
-
-      request = Rack::Request.new(env)
-
-      params = indifferent_params(request.params)
+    def call(request)
 
       if @custom_block
-        @custom_block.call(request, params)
+        @custom_block.call(request)
       end
 
-      route = request.path_info
-      route.chop! if (char=route[-1]) and char=='/' # ignore last '/' char
-      route[0] = '' if route[0]=="/" #remove first '/' char
+      route = request.route || ""
+      
+      params = parse_params(request.params)
 
       sym_route = route.to_sym
 
@@ -43,11 +43,16 @@ module Jetra
         res = @app.call(:not_found, params)
       end
 
-      result = {}
-      result[:status] = res.status
-      result[:body] = res.body
+      response = Thrift::Response.new
+      response.status = res.status
+      response.body = res.body.to_json
+      response
+    end
 
-      ['200', {'Content-Type' => 'application/json;charset=utf-8'}, [result.to_json]]
+    def parse_params(params)
+      indifferent_params(JSON.load(params).to_h)
+    rescue => boom
+      {}
     end
 
     # Enable string or symbol key access to the nested params hash.
