@@ -5,8 +5,15 @@ require "jetra/adapter/thrift"
 class ApiInterface < Jetra::Base
 
   before do
-    puts "#{Time.now} #{request.inspect}"
+    response.status = 200
   end
+
+  def haltError(boom)
+    response.status = 500
+    halt "haltError!!!"
+  end
+
+  error do |boom| haltError(boom) end
 
   route :greeting do
     "hello, world!"
@@ -51,8 +58,8 @@ port = 9090
 handler = thriftApp
 processor = Jetra::Thrift::Service::Processor.new(handler)
 transport = Thrift::ServerSocket.new(port)
-transportFactory = Thrift::BufferedTransportFactory.new()
-server = Thrift::SimpleServer.new(processor, transport, transportFactory)
+transportFactory = Thrift::FramedTransportFactory.new()
+server = Thrift::NonblockingServer.new(processor, transport, transportFactory)
 
 puts "Starting the server..."
 server.serve()
