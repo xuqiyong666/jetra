@@ -15,11 +15,6 @@ module Jetra
     def initialize(app, &custom_block)
       @app = app
 
-      @routes = Set.new
-      @app.routes.each_key do |route|
-        @routes << route
-      end
-
       @custom_block = custom_block
 
     end
@@ -36,12 +31,7 @@ module Jetra
 
       sym_route = route.to_sym
 
-      if @routes.include?(sym_route)
-        res = @app.call(sym_route, params)
-      else
-        params[:route] = route
-        res = @app.call(:not_found, params)
-      end
+      res = @app.call(sym_route, params)
 
       response = Thrift::Response.new
       response.status = res.status
