@@ -20,7 +20,7 @@ class TestCombinerApp < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{params}")
+    assert_equal(response.body[:msg], "got params #{params}")
   end
 
   def testStatus
@@ -51,9 +51,9 @@ class TestCombinerApp < Test::Unit::TestCase
   def testNotFound
     response = CombinerApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
   end
 
   def testSayHello
@@ -61,9 +61,9 @@ class TestCombinerApp < Test::Unit::TestCase
     params = {name: "jeffrey"}
     response = CombinerApplication.call(:sayHello, params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hello, #{params[:name]}")
+    assert(response.body == "hello, #{params[:name]}")
   end
 
   def testSayHi
@@ -71,9 +71,9 @@ class TestCombinerApp < Test::Unit::TestCase
     params = {name: "peter"}
     response = CombinerApplication.call(:sayHi, params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hi, #{params[:name]}")
+    assert(response.body == "hi, #{params[:name]}")
   end
 
   def testParamsWithApplication
@@ -82,7 +82,7 @@ class TestCombinerApp < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{params}")
+    assert_equal(response.body[:msg], "got params #{params}")
   end
 
   def testStatusWithApplication
@@ -113,9 +113,9 @@ class TestCombinerApp < Test::Unit::TestCase
   def testNotFoundWithApplication
     response = CombinerApp.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
   end
 
   def testSayHelloWithApplication
@@ -123,9 +123,9 @@ class TestCombinerApp < Test::Unit::TestCase
     params = {name: "jeffrey"}
     response = CombinerApp.sayHello(params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hello, #{params[:name]}")
+    assert(response.body == "hello, #{params[:name]}")
   end
 
   def testSayHiWithApplication
@@ -133,9 +133,9 @@ class TestCombinerApp < Test::Unit::TestCase
     params = {name: "peter"}
     response = CombinerApp.sayHi(params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hi, #{params[:name]}")
+    assert(response.body == "hi, #{params[:name]}")
   end
 
   def assertResponseStatus(response, status)

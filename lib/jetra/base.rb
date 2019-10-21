@@ -4,7 +4,7 @@ module Jetra
 
   class NotFoundException < Exception ; end
 
-  class Halt ; end
+  class Halt < Exception ; end
 
   class Request
 
@@ -20,7 +20,7 @@ module Jetra
     
     attr_accessor :status, :body
 
-    def initialize(status=0, body=nil)
+    def initialize(status=-1, body="")
       @status = status.to_i
       @body = body
     end
@@ -43,31 +43,31 @@ module Jetra
       @request  = Request.new(route, params)
       @response = Response.new
 
-      @params   = indifferentParams(@request.params)
+      @params   = indifferent_params(@request.params)
 
       invoke { dispatch! }
 
       @response.finish
     end
 
-    def currentClass
+    def current_class
       self.class
     end
 
-    def indifferentParams(object)
+    def indifferent_params(object)
       case object
       when Hash
-        newHash = indifferentHash
-        object.each { |key, value| newHash[key] = indifferentParams(value) }
+        newHash = indifferent_hash
+        object.each { |key, value| newHash[key] = indifferent_params(value) }
         newHash
       when Array
-        object.map { |item| indifferentParams(item) }
+        object.map { |item| indifferent_params(item) }
       else
         object
       end
     end
 
-    def indifferentHash
+    def indifferent_hash
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
@@ -97,20 +97,20 @@ module Jetra
       route!
     rescue ::Exception => boom
       gotError = true
-      handleException!(boom)
+      handle_exception!(boom)
     ensure
       begin
         filter! :after
       rescue ::Exception => boom
-        handleException!(boom) unless gotError
+        handle_exception!(boom) unless gotError
       end
     end
 
-    def handleException!(boom)
+    def handle_exception!(boom)
 
-      response.status = 0
+      response.status = -1
 
-      errorBlock!(boom.class, boom)
+      error_block!(boom.class, boom)
 
       raise boom
     end
@@ -121,25 +121,25 @@ module Jetra
     end
 
     def filter!(type)
-      currentClass.filters[type].each do |args|
+      current_class.filters[type].each do |args|
         processRoute(*args)
       end
     end
 
     def route!
 
-      if block = currentClass.routes[@request.route.to_sym]
+      if block = current_class.routes[@request.route.to_sym]
         processRoute do |*args|
           routeEval { block[*args] }
         end
       end
 
-      routeMissing
+      route_missing
     end
 
-    def errorBlock!(errorClass, *blockParams)
+    def error_block!(errorClass, *blockParams)
 
-      if errorBlocks = currentClass.errors[errorClass]
+      if errorBlocks = current_class.errors[errorClass]
         errorBlocks.reverse_each do |errorBlock|
           args = [errorBlock]
           args += [blockParams]
@@ -148,7 +148,7 @@ module Jetra
       end
 
       if errorClass.respond_to? :superclass and errorClass.superclass <= Exception
-        errorBlock!(errorClass.superclass, *blockParams)
+        error_block!(errorClass.superclass, *blockParams)
       end
     end
 
@@ -160,42 +160,34 @@ module Jetra
       block ? block[self,values] : yield(self,values)
     end
 
-    def routeMissing
+    def route_missing
       raise NotFoundException.new("route not found")
     end
 
-    def successResponse(body, args = {status: 1})
-      status = args[:status]
-      raise "status code must >= 1 when using success" if status < 1
+    def success_response(body, status=0)
 
-      if body.class == String
-        body = {msg: body}
-      end
+      raise "status code must >= 0 when success" if status < 0
 
       response.body = body
       response.status = status
-      nil
     end
 
-    def failureResponse(body, args = {status: -1})
-      status = args[:status]
-      raise "status code must <= -1 when using failure" if status > -1
+    def failure_response(body, status=-1)
 
-      if body.class == String
-        body = {msg: body}
-      end
+      raise "status code must <= -1 when failure" if status > -1
 
       response.body = body
       response.status = status
-      nil
     end
 
-    def haltSuccess(body, args = {status: 1})
-      halt successResponse(body, args)
+    def halt_success(body, status=0)
+      success_response(body, status)
+      halt
     end
 
-    def haltFailure(body, args ={status: -1})
-      halt failureResponse(body, args)
+    def halt_failure(body, status=-1)
+      failure_response(body, status)
+      halt
     end
 
     class << self
@@ -211,14 +203,14 @@ module Jetra
       end
 
       def before(&block)
-        addFilter(:before, &block)
+        add_filter(:before, &block)
       end
 
       def after(&block)
-        addFilter(:after, &block)
+        add_filter(:after, &block)
       end
 
-      def addFilter(type, &block)
+      def add_filter(type, &block)
         @filters[type] << compile!(&block)
       end
 
@@ -252,14 +244,14 @@ module Jetra
 
       def inherited(subclass)
 
-        subclass.routes = copyRoutes
-        subclass.filters = copyFilters
-        subclass.errors = copyErrors
+        subclass.routes = copy_routes
+        subclass.filters = copy_filters
+        subclass.errors = copy_errors
 
         super
       end
 
-      def copyRoutes
+      def copy_routes
         newRoutes = {}
         @routes.each do |key, value|
           newRoutes[key] = value
@@ -267,7 +259,7 @@ module Jetra
         newRoutes
       end
 
-      def copyFilters
+      def copy_filters
         newFilters = {}
         @filters.each do |key, values|
           newValues = []
@@ -279,7 +271,7 @@ module Jetra
         newFilters
       end
 
-      def copyErrors
+      def copy_errors
         newErrors = {}
         @errors.each do |key, values|
           newValues = []
@@ -310,12 +302,16 @@ module Jetra
     @errors         = {}
 
     error do |boom|
+
+      boommsg = "#{boom.class} - #{boom.message}"
+
       if boom.class == Jetra::NotFoundException
         trace = []
       else
         trace = boom.backtrace
+        trace.unshift boommsg
       end
-      response.body = {msg: "#{boom.class} - #{boom.message}", class: boom.class.to_s, route: request.route, params: params, trace: trace}
+      response.body = {msg: boommsg, class: boom.class.to_s, route: request.route, params: params, trace: trace}
       halt
     end
 

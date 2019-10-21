@@ -54,7 +54,7 @@ class TestSecondExtendApplication < Test::Unit::TestCase
     response = SecondExtendApplication.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testBeforeAfter", "after1", "after2", "after3", "after4"])
   end
@@ -70,7 +70,7 @@ class TestSecondExtendApplication < Test::Unit::TestCase
     response = SecondExtendApplication.call(:testInvoke1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end
   
   def testInvoke2
@@ -84,7 +84,7 @@ class TestSecondExtendApplication < Test::Unit::TestCase
     response = SecondExtendApplication.call(:testHalt1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt2
@@ -98,7 +98,7 @@ class TestSecondExtendApplication < Test::Unit::TestCase
     response = SecondExtendApplication.call(:testHalt3)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt4
@@ -118,15 +118,15 @@ class TestSecondExtendApplication < Test::Unit::TestCase
   def testHalt6
     response = SecondExtendApplication.call(:testHalt6)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert_equal(response.body, "")
+    assertResponseStatus(response, -1)
   end
 
   def testRuntimeException
     response = SecondExtendApplication.call(:testRuntimeException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testRuntimeException", "errorBlockInSecondExtendApplication", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3", "after4"])
   end  
@@ -134,8 +134,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
   def testCustomTestException
     response = SecondExtendApplication.call(:testCustomTestException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testCustomTestException", "customErrorBlockInSecondExtendApplication", "customErrorBlockInExtendApplication", "customErrorBlock", "haltError", "after1", "after2", "after3", "after4"])
   end
@@ -143,8 +143,8 @@ class TestSecondExtendApplication < Test::Unit::TestCase
   def testCustomTestExceptionForHalt
     response = SecondExtendApplication.call(:testCustomTestExceptionForHalt)
 
-    assert(response.body[:msg] == "got An CustomTestExceptionForHalt")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An CustomTestExceptionForHalt")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "testCustomTestExceptionForHalt", "customHaltErrorBlock", "after1", "after2", "after3", "after4"])
   end
@@ -155,22 +155,22 @@ class TestSecondExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{param}")
+    assert_equal(response.body[:msg], "got params #{param}")
   end
 
   def testEmptyAction
     response = SecondExtendApplication.call(:testEmptyAction)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert_equal(response.body, "")
+    assertResponseStatus(response, -1)
   end  
 
   def testNotFound
     response = SecondExtendApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "errorBlockInSecondExtendApplication", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3", "after4"])
   end

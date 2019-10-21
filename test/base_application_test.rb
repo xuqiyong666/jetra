@@ -18,7 +18,7 @@ class TestBaseApplication < Test::Unit::TestCase
     response = BaseApplication.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "testBeforeAfter", "after1", "after2"])
   end
@@ -34,7 +34,7 @@ class TestBaseApplication < Test::Unit::TestCase
     response = BaseApplication.call(:testInvoke1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end
   
   def testInvoke2
@@ -48,7 +48,7 @@ class TestBaseApplication < Test::Unit::TestCase
     response = BaseApplication.call(:testHalt1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt2
@@ -62,7 +62,7 @@ class TestBaseApplication < Test::Unit::TestCase
     response = BaseApplication.call(:testHalt3)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt4
@@ -82,15 +82,15 @@ class TestBaseApplication < Test::Unit::TestCase
   def testHalt6
     response = BaseApplication.call(:testHalt6)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert(response.body == "")
+    assertResponseStatus(response, -1)
   end  
 
   def testRuntimeException
     response = BaseApplication.call(:testRuntimeException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "testRuntimeException", "haltError", "after1", "after2"])
   end  
@@ -98,8 +98,8 @@ class TestBaseApplication < Test::Unit::TestCase
   def testCustomTestException
     response = BaseApplication.call(:testCustomTestException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "testCustomTestException", "customErrorBlock", "haltError", "after1", "after2"])
   end
@@ -107,8 +107,8 @@ class TestBaseApplication < Test::Unit::TestCase
   def testCustomTestExceptionForHalt
     response = BaseApplication.call(:testCustomTestExceptionForHalt)
 
-    assert(response.body[:msg] == "got An CustomTestExceptionForHalt")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An CustomTestExceptionForHalt")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "testCustomTestExceptionForHalt", "customHaltErrorBlock", "after1", "after2"])
   end
@@ -119,22 +119,22 @@ class TestBaseApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{param}")
+    assert_equal(response.body[:msg], "got params #{param}")
   end
 
   def testEmptyAction
     response = BaseApplication.call(:testEmptyAction)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert(response.body == "")
+    assertResponseStatus(response, -1)
   end  
 
   def testNotFound
     response = BaseApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:steps] == ["before1", "before2", "haltError", "after1", "after2"])
   end

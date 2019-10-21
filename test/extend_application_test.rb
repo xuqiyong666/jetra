@@ -35,7 +35,7 @@ class TestExtendApplication < Test::Unit::TestCase
     response = ExtendApplication.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "testBeforeAfter", "after1", "after2", "after3"])
   end
@@ -51,7 +51,7 @@ class TestExtendApplication < Test::Unit::TestCase
     response = ExtendApplication.call(:testInvoke1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end
   
   def testInvoke2
@@ -65,7 +65,7 @@ class TestExtendApplication < Test::Unit::TestCase
     response = ExtendApplication.call(:testHalt1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt2
@@ -79,7 +79,7 @@ class TestExtendApplication < Test::Unit::TestCase
     response = ExtendApplication.call(:testHalt3)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
   end  
 
   def testHalt4
@@ -99,15 +99,15 @@ class TestExtendApplication < Test::Unit::TestCase
   def testHalt6
     response = ExtendApplication.call(:testHalt6)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert_equal(response.body, "")
+    assertResponseStatus(response, -1)
   end  
 
   def testRuntimeException
     response = ExtendApplication.call(:testRuntimeException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "testRuntimeException", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3"])
   end  
@@ -115,8 +115,8 @@ class TestExtendApplication < Test::Unit::TestCase
   def testCustomTestException
     response = ExtendApplication.call(:testCustomTestException)
 
-    assert(response.body[:msg] == "got An Exception")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An Exception")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "testCustomTestException", "customErrorBlockInExtendApplication", "customErrorBlock", "haltError", "after1", "after2", "after3"])
   end
@@ -124,8 +124,8 @@ class TestExtendApplication < Test::Unit::TestCase
   def testCustomTestExceptionForHalt
     response = ExtendApplication.call(:testCustomTestExceptionForHalt)
 
-    assert(response.body[:msg] == "got An CustomTestExceptionForHalt")
-    assertResponseStatus(response, 0)
+    assert_equal(response.body[:msg], "got An CustomTestExceptionForHalt")
+    assertResponseStatus(response, -1)
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "testCustomTestExceptionForHalt", "customHaltErrorBlock", "after1", "after2", "after3"])
   end
@@ -136,22 +136,22 @@ class TestExtendApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{param}")
+    assert_equal(response.body[:msg], "got params #{param}")
   end
 
   def testEmptyAction
     response = ExtendApplication.call(:testEmptyAction)
 
-    assert(response.body == nil)
-    assertResponseStatus(response, 0)
+    assert_equal(response.body, "")
+    assertResponseStatus(response, -1)
   end  
 
   def testNotFound
     response = ExtendApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3"])
   end

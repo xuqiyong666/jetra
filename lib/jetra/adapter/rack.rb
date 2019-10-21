@@ -1,6 +1,7 @@
 
 require "set"
 require 'json'
+require 'rack'
 
 module Jetra
 

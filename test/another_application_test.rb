@@ -12,9 +12,9 @@ class TestAnotherApplication < Test::Unit::TestCase
     params = {name: "jeffrey"}
     response = AnotherApplication.call(:sayHello, params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hello, #{params[:name]}")
+    assert(response.body == "hello, #{params[:name]}")
   end
 
   def testSayHi
@@ -22,15 +22,15 @@ class TestAnotherApplication < Test::Unit::TestCase
     params = {name: "peter"}
     response = AnotherApplication.call(:sayHi, params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hi, #{params[:name]}")
+    assert(response.body == "hi, #{params[:name]}")
   end
 
   def testNotFound
     response = AnotherApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd, {xx: 123})
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
     assert(response.body[:class] == "Jetra::NotFoundException")
 
@@ -40,13 +40,13 @@ class TestAnotherApplication < Test::Unit::TestCase
 
   end
 
-  def testFailureAip
+  def testFailureApi
 
     response = AnotherApplication.call(:failureApi)
 
     assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "failureApi Message")
+    assert(response.body == "failureApi Message")
   end
 
   def testSayHelloWithApplication
@@ -54,9 +54,9 @@ class TestAnotherApplication < Test::Unit::TestCase
     params = {name: "jeffrey"}
     response = AnotherApp.sayHello(params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hello, #{params[:name]}")
+    assert(response.body == "hello, #{params[:name]}")
   end
 
   def testSayHiWithApplication
@@ -64,15 +64,15 @@ class TestAnotherApplication < Test::Unit::TestCase
     params = {name: "peter"}
     response = AnotherApp.sayHi(params)
 
-    assertResponseStatus(response, 1)
+    assertResponseStatus(response, 0)
 
-    assert(response.body[:msg] == "hi, #{params[:name]}")
+    assert(response.body == "hi, #{params[:name]}")
   end
 
   def testNotFoundWithApplication
     response = AnotherApp.testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd(xx: 123)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
     assert(response.body[:class] == "Jetra::NotFoundException")
 
@@ -81,13 +81,13 @@ class TestAnotherApplication < Test::Unit::TestCase
     assert(response.body[:trace] == [])
   end
 
-  def testFailureAipWithApplication
+  def testFailureApiWithApplication
 
     response = AnotherApp.failureApi
 
     assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "failureApi Message")
+    assert(response.body == "failureApi Message")
   end
 
   def assertResponseStatus(response, status)

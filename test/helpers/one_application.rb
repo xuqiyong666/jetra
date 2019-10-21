@@ -11,7 +11,6 @@ class OneApplication < Jetra::Base
 
   def invokeOne
 
-    p params[:test]
     response.status = 8001
     successInfoBody
   end

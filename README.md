@@ -37,7 +37,7 @@ ApiInterface.call(:repeat)
 #=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
 ```
 
-或者使用to_app，让方法调用更舒服
+使用to_app，让方法调用更舒服
 
 ```ruby
 
@@ -53,9 +53,9 @@ App.repeat
 #=> #<Jetra::Response:0x007fd92f88dc08 @status=0, @body="you said `nothing`">
 ```
 
-以上示例是程序内部调用，那么怎么才能支持接口的远程调用？
+以上示例是程序内部调用，那么怎样才能支持接口的远程调用？
 
-方法1: 转化为基于rack的http接口
+1. 转化为http接口
 
 ```ruby
 
@@ -68,14 +68,35 @@ Rack::Server.start(
 )
 ```
 
-然后打开浏览器访问接口地址 http://localhost:9292/repeat?msg=work
+然后你就可以访问网址 http://localhost:9292/repeat?msg=work
 
-tips: 你可以使用你喜欢的Thin/Unicorn/Puma来运行Rack程序。
+2. 转化为thrift接口
 
-方法2: 转化为thrift接口
-
+server端代码
 ```ruby
-todo
+
+  require "jetra"
+  require "jetra/adapter/thrift"
+
+  thriftApp = Jetra::ThriftAdapter.new(ApiInterface)
+
+  port = 9090
+  handler = thriftApp
+  processor = Jetra::Thrift::Service::Processor.new(handler)
+  transport = Thrift::ServerSocket.new(port)
+  transportFactory = Thrift::FramedTransportFactory.new()
+  server = Thrift::NonblockingServer.new(processor, transport, transportFactory)
+
+  puts "Starting the server..."
+  server.serve()
+
+```
+
+client端代码
+```ruby
+
+  
+
 ```
 
 通过编写自定义适配器，你可以将jetra接口转化为需要的接口类型。此处只是拿thrift举例。

@@ -14,7 +14,7 @@ class TestApplication < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{param}")
+    assert_equal(response.body[:msg], "got params #{param}")
   end
 
   def test_not_found
@@ -22,9 +22,9 @@ class TestApplication < Test::Unit::TestCase
     param = {name: "jeffrey"}
     response = Application.aabbbccccdddeeffg(param)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:params] == param)
 

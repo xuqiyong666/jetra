@@ -55,6 +55,7 @@ end
 while true
   p call_greeting
   puts ""
+  sleep 1
 end
 
 

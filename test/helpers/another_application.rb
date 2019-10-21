@@ -8,17 +8,17 @@ class AnotherApplication < Jetra::Base
   def sayHelloX
     name = params[:name].to_s
 
-    successResponse "hello, #{name}"
+    halt_success "hello, #{name}"
   end
 
   def sayHi
     name = params[:name].to_s
 
-    successResponse "hi, #{name}"
+    halt_success "hi, #{name}"
   end
 
   def failureApi
-    haltFailure "failureApi Message"
+    halt_failure "failureApi Message"
   end
 
   route :sayHello do sayHelloX end

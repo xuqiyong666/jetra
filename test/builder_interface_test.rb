@@ -22,14 +22,14 @@ class TestBuilder < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{params}")
+    assert_equal(response.body[:msg], "got params #{params}")
   end
 
   def testErrorParams
     params = "abc"
     response = BuilderApp.testParams(params)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
     assert(response.body[:msg] == "Jetra::Middleware::Validater: params type miss match. excepted Hash, got #{params.class.to_s}")
   end
@@ -64,9 +64,9 @@ class TestBuilder < Test::Unit::TestCase
     param = {name: "jeffrey"}
     response = BuilderApp.aabbbccccdddeeffg(param)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
 
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:params] == param)
 

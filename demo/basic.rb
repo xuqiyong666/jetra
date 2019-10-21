@@ -1,4 +1,6 @@
 
+$LOAD_PATH.unshift File.expand_path("../lib" , __dir__)
+
 #首先写一个基本的接口类
 
 require "jetra"
@@ -22,7 +24,7 @@ ApiInterface.call(:greeting)
 ApiInterface.call(:repeat, msg: "I am fine") 
 #=> #<Jetra::Response:0x007fc1a8897be8 @status=0, @body="you said `I am fine`">
 
-ApiInterface.call(:repeat) 
+ApiInterface.call(:repeat)
 #=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
 
 

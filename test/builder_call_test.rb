@@ -20,14 +20,16 @@ class TestBuilder < Test::Unit::TestCase
 
     assertResponseStatus(response, 391)
 
-    assert(response.body[:msg] == "got params #{params}")
+    assert_equal(response.body[:msg], "got params #{params}")
   end
 
   def testErrorParams
     params = "abc"
     response = BuilderAppication.call(:testParams, params)
 
-    assertResponseStatus(response, 0)
+    p response
+
+    assertResponseStatus(response, -1)
 
     assert(response.body[:msg] == "Jetra::Middleware::Validater: params type miss match. excepted Hash, got #{params.class.to_s}")
   end
@@ -60,15 +62,15 @@ class TestBuilder < Test::Unit::TestCase
   def testNotFound
     response = BuilderAppication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
 
-    assertResponseStatus(response, 0)
+    assertResponseStatus(response, -1)
     
-    assert(response.body[:msg] == "got An Exception")
+    assert_equal(response.body[:msg], "got An Exception")
 
     assert(response.body[:steps] == ["before1", "before2", "before3", "before4", "errorBlockInSecondExtendApplication", "errorBlockInExtendApplication", "haltError", "after1", "after2", "after3", "after4"])
   end
 
   def assertResponseStatus(response, status)
-    assert(response.status == status)
+    assert_equal(response.status, status)
   end
 
   def assertSuccessMsg(response)
