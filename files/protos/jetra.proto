@@ -1,0 +1,19 @@
+
+syntax = "proto3";
+
+package jetra.grpc;
+
+service Interface {
+
+    rpc Call (JetraRequest) returns (JetraResponse) {}
+}
+
+message JetraRequest {
+    string route = 1;
+    string params = 2;
+}
+
+message JetraResponse {
+    int32 status = 1;
+    string body = 2;
+}

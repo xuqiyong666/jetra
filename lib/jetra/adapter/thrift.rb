@@ -5,7 +5,6 @@ require "jetra/adapter/thrift/jetra_types"
 require "jetra/adapter/thrift/jetra_constants"
 require "jetra/adapter/thrift/service"
 
-require "set"
 require 'json'
 
 module Jetra

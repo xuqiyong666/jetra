@@ -25,6 +25,8 @@ class ApiInterface < Jetra::Base
 
 end
 
+
+
 thriftApp = Jetra::ThriftAdapter.new(ApiInterface)
 
 port = 9090

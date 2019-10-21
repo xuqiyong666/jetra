@@ -10,11 +10,29 @@ DemoClient = Jetra::ThriftClient.new(host, port)
 def call_greeting
   request = Jetra::Thrift::Request.new
   request.route = "greeting"
-  # request.params = ""
 
   DemoClient.call(request)
 end
 
-puts call_greeting.inspect
+
+def call_repeat
+  request = Jetra::Thrift::Request.new
+  request.route = "repeat"
+  request.params = {msg: "ok,thrift!"}.to_json
+
+  DemoClient.call(request)
+end
+
+while true
+
+    begin
+        puts call_greeting.inspect
+        puts call_repeat.inspect
+    rescue => boom
+        puts boom.message
+    end
+
+    sleep 1
+end
 
 puts "finish.."

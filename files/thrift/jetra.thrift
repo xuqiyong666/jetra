@@ -11,7 +11,6 @@ struct Response {
   2: string body
 }
 
-
 service Service {
 
    Response call(1:Request request)

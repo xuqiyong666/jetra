@@ -38,30 +38,6 @@ App.repeat(msg: "I am great")
 App.repeat
 #=> #<Jetra::Response:0x007fd92f88dc08 @status=0, @body="you said `nothing`">
 
-
-#以上示例是程序内部调用，那么怎么才能支持远程调用？
-
-#方法1: 转化为http接口
-
-require "rack"
-require "jetra/adapter/rack"
-RackApp = Jetra::RackAdapter.new(ApiInterface)
-
-Rack::Server.start(
-  app: RackApp, :Port => 9292
-)
-
-#试试访问 http://localhost:9292/repeat?msg=work?
-
-
-#转化为Rack应用后，你可以使用你喜欢的Thin/Unicorn/Puma来运行。
-
-#方法2: 转化为thrift接口
-
-#通过编写自定义适配器，你可以将jetra接口转化为需要的接口类型。此处只是拿thrift举例。
-
-
-
 # puts "finish"
 
 
