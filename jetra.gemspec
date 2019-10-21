@@ -1,5 +1,5 @@
 # coding: utf-8
-$LOAD_PATH.unshift File.expand_path('lib', __dir__)
+response.body[:msg] == "Jetra::.unshift File.expand_path('lib', __dir__)
 
 require "jetra/version"
 

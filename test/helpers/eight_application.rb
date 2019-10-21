@@ -1,5 +1,5 @@
-libdir = File.expand_path("../../lib", __dir__)
-$LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
+# libdir = File.expand_path("../../lib", __dir__)
+# .unshift libdir unless .include?(libdir)
 
 require "jetra"
 

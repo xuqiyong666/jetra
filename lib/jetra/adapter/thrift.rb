@@ -66,4 +66,50 @@ module Jetra
 
   end
 
+  class ThriftServer
+
+    def initialize(handler, port)
+      port = port
+      processor = Thrift::Service::Processor.new(handler)
+      transport = ::Thrift::ServerSocket.new(port)
+      transportFactory = ::Thrift::FramedTransportFactory.new()
+      @server = ::Thrift::NonblockingServer.new(processor, transport, transportFactory)
+    end
+
+    def serve
+      @server.serve()
+    end
+
+  end
+
+  class ThriftClient
+
+    def initialize(host, port)
+
+      transport = ::Thrift::FramedTransport.new(::Thrift::Socket.new(host, port))
+      protocol = ::Thrift::BinaryProtocol.new(transport)
+
+      @transport = transport
+
+      @client = Thrift::Service::Client.new(protocol)
+    end
+
+    def call(request)
+
+      @client.call(request)
+
+    rescue ::Thrift::TransportException, IOError => boom
+
+      establish_connection
+
+      @client.call(request)
+
+    end
+
+    def establish_connection
+      @transport.open
+    end
+
+  end
+
 end

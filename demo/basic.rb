@@ -1,6 +1,4 @@
 
-$LOAD_PATH.unshift File.expand_path("../lib" , __dir__)
-
 #首先写一个基本的接口类
 
 require "jetra"

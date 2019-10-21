@@ -1,5 +1,3 @@
-libdir = File.expand_path("../lib", __dir__)
-$LOAD_PATH.unshift libdir unless $LOAD_PATH.include?(libdir)
 
 require_relative "helpers/one_application"
 require_relative "helpers/two_application"

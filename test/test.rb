@@ -1,7 +1,5 @@
 # coding: utf-8
 
-$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
-
 require_relative "helpers/second_extend_application"
 
 require "test/unit"
