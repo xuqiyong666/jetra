@@ -15,18 +15,17 @@ module Jetra
       @app = app
 
       @custom_block = custom_block
-
     end
 
     def call(request)
 
-      if @custom_block
-        @custom_block.call(request)
-      end
-
       route = request.route || ""
       
       params = parse_params(request.params)
+
+      if @custom_block
+        @custom_block.call(route, params)
+      end
 
       sym_route = route.to_sym
 

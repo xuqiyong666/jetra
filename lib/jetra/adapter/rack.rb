@@ -20,15 +20,15 @@ module Jetra
 
       request = Rack::Request.new(env)
 
-      params = indifferent_params(request.params)
-
-      if @custom_block
-        @custom_block.call(request, params)
-      end
-
       route = request.path_info
       route.chop! if (char=route[-1]) and char=='/' # ignore last '/' char
       route[0] = '' if route[0]=="/" #remove first '/' char
+
+      params = indifferent_params(request.params)
+
+      if @custom_block
+        @custom_block.call(route, params)
+      end
 
       sym_route = route.to_sym
 

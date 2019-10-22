@@ -23,11 +23,18 @@ class ApiInterface < Jetra::Base
     "you said `#{params[:msg] || "nothing"}`"
   end
 
+  route "api2019/create_cat" do
+
+    halt_success(name: "tom", age: 6, color: "black")
+  end
+
 end
 
 
 
-thriftApp = Jetra::ThriftAdapter.new(ApiInterface)
+thriftApp = Jetra::ThriftAdapter.new(ApiInterface) do |route, params|
+  puts "#{Time.now} route: #{route.inspect} params: #{params.inspect}"
+end
 
 port = 9090
 

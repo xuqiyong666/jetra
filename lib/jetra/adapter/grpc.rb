@@ -19,17 +19,15 @@ module Jetra
 
         def call(request, _unused_call)
 
-            if @custom_block
-                @custom_block.call(request)
-            end
-
             route = request.route || ""
             
             params = parse_params(request.params)
 
-            sym_route = route.to_sym
+            if @custom_block
+                @custom_block.call(route, params)
+            end
 
-            res = @app.call(sym_route, params)
+            res = @app.call(route.to_sym, params)
 
             response = Jetra::Grpc::JetraResponse.new
             response.status = res.status

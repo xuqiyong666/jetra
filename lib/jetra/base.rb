@@ -32,6 +32,9 @@ module Jetra
 
   class Base
 
+    Settings = {}
+    Settings[:env] = "development"
+
     attr_accessor :request, :response, :params
 
     def call(route, params)
@@ -214,7 +217,8 @@ module Jetra
         @filters[type] << compile!(&block)
       end
 
-      def route(symbol, &block)
+      def route(string, &block)
+        symbol = string.to_sym
         block ||= Proc.new { method(symbol).call }
         @routes[symbol] = compile!(&block)
       end

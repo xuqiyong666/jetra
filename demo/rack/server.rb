@@ -23,14 +23,8 @@ class ApiInterface < Jetra::Base
 
 end
 
-RackApp = Jetra::RackAdapter.new(ApiInterface) do |request, params|
-
-  # if you only want to accept post methods
-  # if request.request_method != "POST"
-  #   params[:request_path] = request.path_info
-  #   request.path_info = "OnlyAcceptPostMethod"
-  # end
-
+RackApp = Jetra::RackAdapter.new(ApiInterface) do |route, params|
+  puts "#{Time.now} route: #{route.inspect} params: #{params.inspect}"
 end
 
 Rack::Server.start(

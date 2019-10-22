@@ -10,7 +10,8 @@ class ApiInterface < Jetra::Base
 
     def haltError(boom)
         response.status = 500
-        halt "haltError!!!"
+
+        halt "Internal Server Error" if Settings[:env] == "production"
     end
 
     error do |boom| haltError(boom) end
@@ -23,13 +24,20 @@ class ApiInterface < Jetra::Base
         "you said `#{params[:msg] || "nothing"}`"
     end
 
+    route "api2019/create_cat" do
+
+        halt_success(name: "tom", age: 6, color: "black")
+    end
+
 end
 
 puts "Starting the server..."
 
 bind = '0.0.0.0:50051'
 
-grpcApp = Jetra::GrpcAdapter.new(ApiInterface)
+grpcApp = Jetra::GrpcAdapter.new(ApiInterface) do |route, params|
+    puts "#{Time.now} route: #{route.inspect} params: #{params.inspect}"
+end
 
 server = Jetra::GrpcServer.new(grpcApp, bind)
 
