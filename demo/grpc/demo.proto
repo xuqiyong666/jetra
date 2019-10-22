@@ -1,0 +1,11 @@
+
+syntax = "proto3";
+
+package jetra.grpc_demo;
+
+message Product {
+    uint32 id = 1;
+    string name = 2;
+    float price = 3;
+}
+

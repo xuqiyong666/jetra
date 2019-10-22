@@ -3,15 +3,16 @@
 
 require 'google/protobuf'
 
+require 'google/protobuf/any_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("jetra.proto", :syntax => :proto3) do
     add_message "jetra.grpc.JetraRequest" do
       optional :route, :string, 1
-      optional :params, :string, 2
+      map :params, :string, :string, 2
     end
     add_message "jetra.grpc.JetraResponse" do
       optional :status, :int32, 1
-      optional :body, :string, 2
+      optional :body, :message, 2, "google.protobuf.Any"
     end
   end
 end

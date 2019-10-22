@@ -307,6 +307,8 @@ module Jetra
 
     error do |boom|
 
+      raise boom #TODO 因为服务类型不同，错误返回就不同，没法统一默认异常返回结果
+
       boommsg = "#{boom.class} - #{boom.message}"
 
       if boom.class == Jetra::NotFoundException
