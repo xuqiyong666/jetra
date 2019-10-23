@@ -5,7 +5,7 @@ require_relative "protos/demo_pb"
 
 host_and_port = "localhost:50051"
 
-DemoClient = Jetra::GrpcClient.new(host_and_port)
+DemoClient = Jetra::Grpc::Client.new(host_and_port)
 
 def send_grpc_request(route, params)
 
@@ -15,7 +15,7 @@ def send_grpc_request(route, params)
         ptparams[k.to_s] = v.to_s
     end
 
-    request = Jetra::Grpc::JetraRequest.new
+    request = Jetra::Grpc::Request.new
     request.route = route
     request.params = ptparams
 

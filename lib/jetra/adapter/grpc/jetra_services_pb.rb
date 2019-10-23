@@ -15,7 +15,7 @@ module Jetra
         self.unmarshal_class_method = :decode
         self.service_name = 'jetra.grpc.Interface'
 
-        rpc :Call, JetraRequest, JetraResponse
+        rpc :Call, Request, Response
       end
 
       Stub = Service.rpc_stub_class

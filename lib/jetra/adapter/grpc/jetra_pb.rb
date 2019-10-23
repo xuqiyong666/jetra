@@ -6,11 +6,11 @@ require 'google/protobuf'
 require 'google/protobuf/any_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("jetra.proto", :syntax => :proto3) do
-    add_message "jetra.grpc.JetraRequest" do
+    add_message "jetra.grpc.Request" do
       optional :route, :string, 1
       map :params, :string, :string, 2
     end
-    add_message "jetra.grpc.JetraResponse" do
+    add_message "jetra.grpc.Response" do
       optional :status, :int32, 1
       optional :body, :message, 2, "google.protobuf.Any"
     end
@@ -19,7 +19,7 @@ end
 
 module Jetra
   module Grpc
-    JetraRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("jetra.grpc.JetraRequest").msgclass
-    JetraResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("jetra.grpc.JetraResponse").msgclass
+    Request = Google::Protobuf::DescriptorPool.generated_pool.lookup("jetra.grpc.Request").msgclass
+    Response = Google::Protobuf::DescriptorPool.generated_pool.lookup("jetra.grpc.Response").msgclass
   end
 end

@@ -55,9 +55,9 @@ puts "Starting the server..."
 
 bind = '0.0.0.0:50051'
 
-grpcApp = Jetra::GrpcAdapter.new(ApiInterface)
+grpcApp = Jetra::Grpc::Adapter.new(ApiInterface)
 
-server = Jetra::GrpcServer.new(grpcApp, bind)
+server = Jetra::Grpc::Server.new(grpcApp, bind)
 
 server.serve()
 
