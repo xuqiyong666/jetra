@@ -5,40 +5,31 @@ require "jetra"
 
 class ApiInterface < Jetra::Base
 
-  route :greeting do
+  route "greeting" do
     "hello, world!"
   end
 
-  route :repeat do
-    "you said `#{params[:msg] || "nothing"}`"
+  route "repeat" do
+    "you said `#{params["msg"] || "nothing"}`"
   end
 
 end
 
-#然后就可以这样调用
-ApiInterface.call(:greeting) 
-#=> #<Jetra::Response:0x007fe1b68a5af8 @status=0, @body="hello, world!">
 
-ApiInterface.call(:repeat, msg: "I am fine") 
-#=> #<Jetra::Response:0x007fc1a8897be8 @status=0, @body="you said `I am fine`">
+p ApiInterface.call("greeting")
 
-ApiInterface.call(:repeat)
-#=> #<Jetra::Response:0x007f804b07f8a0 @status=0, @body="you said `nothing`">
+p ApiInterface.call("repeat", "msg" => "I am fine") 
 
+bind = '0.0.0.0:50051'
 
-#或者使用to_app，让方法调用更舒服
-App = ApiInterface.to_app
+grpcApp = Jetra::Grpc::Adapter.new(ApiInterface)
 
-App.greeting
-#=> #<Jetra::Response:0x007fa4b4093868 @status=0, @body="hello, world!">
+server = Jetra::Grpc::Server.new(grpcApp, bind)
 
-App.repeat(msg: "I am great")
-#=> #<Jetra::Response:0x007fed3508ec90 @status=0, @body="you said `I am great`">
+puts "Starting the server..."
+server.serve()
 
-App.repeat
-#=> #<Jetra::Response:0x007fd92f88dc08 @status=0, @body="you said `nothing`">
-
-# puts "finish"
+puts "finish"
 
 
 

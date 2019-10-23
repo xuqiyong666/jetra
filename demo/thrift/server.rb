@@ -5,15 +5,17 @@ require "jetra/adapter/thrift"
 class ApiInterface < Jetra::Base
 
   before do
-    response.status = 200
+    puts "#{Time.now} route: #{request.route.inspect} params: #{params.inspect}"
   end
 
-  def haltError(boom)
+  error do |boom| 
+
     response.status = 500
-    halt "haltError!!!"
-  end
 
-  error do |boom| haltError(boom) end
+    puts ["#{Time.now} #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+
+    halt "Internal Server Error"
+  end
 
   route :greeting do
     "hello, world!"
@@ -32,9 +34,7 @@ end
 
 
 
-thriftApp = Jetra::ThriftAdapter.new(ApiInterface) do |route, params|
-  puts "#{Time.now} route: #{route.inspect} params: #{params.inspect}"
-end
+thriftApp = Jetra::ThriftAdapter.new(ApiInterface)
 
 port = 9090
 
