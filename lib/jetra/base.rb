@@ -12,9 +12,9 @@ module Jetra
 
     def initialize(route=nil, params=nil, headers=nil, body=nil)
       @route = route || ""
-      @params = params || {}
-      @headers = headers || {}
-      @body = body.to_s
+      @params = params
+      @headers = headers
+      @body = body
     end
   end
 
@@ -24,8 +24,8 @@ module Jetra
 
     def initialize(status=nil, body=nil, headers=nil)
       @status = status.to_i
-      @body = body.to_s
-      @headers = headers || {}
+      @body = body
+      @headers = headers
     end
 
     def finish
@@ -188,8 +188,8 @@ module Jetra
         @prototype ||= new
       end
 
-      def call(route, params={})
-        prototype.call(route, params)
+      def call(route, params, headers, body)
+        prototype.call(route, params, headers, body)
       end
 
       def before(&block)

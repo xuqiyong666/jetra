@@ -23,15 +23,11 @@ module Jetra
     
             def call(request, _unused_call)
     
-                route = request.route || ""
-                
-                params = request.params
-    
                 if @custom_block
-                    @custom_block.call(route, params)
+                    @custom_block.call(request)
                 end
     
-                res = @app.call(route.to_sym, params)
+                res = @app.call(request.route, request.params, request.headers, request.body)
     
                 anyBody = Google::Protobuf::Any.new
                 anyBody.pack(res.body)
@@ -41,31 +37,7 @@ module Jetra
                 response.body = anyBody
                 response
             end
-    
-            # def parse_params(params)
-            #     indifferent_params(JSON.load(params).to_h)
-            # rescue => boom
-            #     {}
-            # end
-    
-            # Enable string or symbol key access to the nested params hash.
-            # def indifferent_params(object)
-            #     case object
-            #     when Hash
-            #         new_hash = indifferent_hash
-            #         object.each { |key, value| new_hash[key] = indifferent_params(value) }
-            #         new_hash
-            #     when Array
-            #         object.map { |item| indifferent_params(item) }
-            #     else
-            #         object
-            #     end
-            # end
-    
-            # Creates a Hash with indifferent access.
-            # def indifferent_hash
-            #     Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
-            # end
+            
         end
     
         class Server

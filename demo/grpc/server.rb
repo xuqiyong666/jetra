@@ -24,11 +24,13 @@ class ApiInterface < Jetra::Base
         puts "#{Time.now} #{response.status} #{request.route.inspect} #{request.params.inspect}"
     end
 
-
     error do |boom|
+
         response.status = 500
+
+        puts ["#{Time.now} #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+
         raise boom
-        
     end
 
     route :repeat do

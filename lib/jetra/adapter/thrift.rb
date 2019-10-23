@@ -27,9 +27,7 @@ module Jetra
         @custom_block.call(route, params)
       end
 
-      sym_route = route.to_sym
-
-      res = @app.call(sym_route, params)
+      res = @app.call(route, params)
 
       response = Thrift::Response.new
       response.status = res.status
