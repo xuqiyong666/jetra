@@ -1,7 +1,7 @@
 
 require "jetra/adapter/grpc"
 
-require_relative "protos/demo_pb"
+require_relative "demo_pb"
 
 host_and_port = "localhost:50051"
 

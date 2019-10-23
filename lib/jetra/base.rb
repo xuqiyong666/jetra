@@ -8,21 +8,24 @@ module Jetra
 
   class Request
 
-    attr_accessor :route, :params
+    attr_accessor :route, :params, :headers, :body
 
-    def initialize(route, params)
+    def initialize(route=nil, params=nil, headers=nil, body=nil)
       @route = route || ""
       @params = params || {}
+      @headers = headers || {}
+      @body = body.to_s
     end
   end
 
   class Response
     
-    attr_accessor :status, :body
+    attr_accessor :status, :body, :headers
 
-    def initialize(status=-1, body="")
+    def initialize(status=nil, body=nil, headers=nil)
       @status = status.to_i
-      @body = body
+      @body = body.to_s
+      @headers = headers || {}
     end
 
     def finish
@@ -37,16 +40,17 @@ module Jetra
 
     attr_accessor :request, :response, :params
 
-    def call(route, params)
-      dup.call!(route, params)
+    def call(route=nil, params=nil, headers=nil, body=nil)
+      request = Request.new(route, params, headers, body)
+      dup.call!(request)
     end
 
-    def call!(route, params)
+    def call!(request)
 
-      @request  = Request.new(route, params)
+      @request = request
       @response = Response.new
 
-      @params   = indifferent_params(@request.params)
+      @params   = request.params
 
       invoke { dispatch! }
 
@@ -55,23 +59,6 @@ module Jetra
 
     def current_class
       self.class
-    end
-
-    def indifferent_params(object)
-      case object
-      when Hash
-        newHash = indifferent_hash
-        object.each { |key, value| newHash[key] = indifferent_params(value) }
-        newHash
-      when Array
-        object.map { |item| indifferent_params(item) }
-      else
-        object
-      end
-    end
-
-    def indifferent_hash
-      Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
     end
 
     def invoke

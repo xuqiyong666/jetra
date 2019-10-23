@@ -9,10 +9,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "jetra.grpc.Request" do
       optional :route, :string, 1
       map :params, :string, :string, 2
+      map :headers, :string, :string, 3
+      optional :body, :message, 4, "google.protobuf.Any"
     end
     add_message "jetra.grpc.Response" do
       optional :status, :int32, 1
       optional :body, :message, 2, "google.protobuf.Any"
+      map :headers, :string, :string, 3
     end
   end
 end

@@ -2,7 +2,7 @@
 require "jetra"
 require "jetra/adapter/grpc"
 
-require_relative "protos/demo_pb"
+require_relative "demo_pb"
 
 class ApiInterface < Jetra::Base
 
@@ -17,9 +17,6 @@ class ApiInterface < Jetra::Base
     end
 
     before do
-
-        response.status = 0
-
         puts "#{Time.now} request route #{request.route.inspect} params: #{request.params.inspect}"
     end
 
@@ -27,12 +24,12 @@ class ApiInterface < Jetra::Base
         puts "#{Time.now} #{response.status} #{request.route.inspect} #{request.params.inspect}"
     end
 
-    def handle_error(boom)
+
+    error do |boom|
         response.status = 500
         raise boom
+        
     end
-
-    error do |boom| handle_error(boom) end
 
     route :repeat do
 

@@ -5,9 +5,18 @@ require "jetra/adapter/rack"
 
 class ApiInterface < Jetra::Base
 
-  # error do
-  #   halt "you got error"
-  # end
+  before do
+    puts "#{Time.now} route: #{request.route.inspect} params: #{params.inspect}"
+  end
+
+  after do
+    puts "#{Time.now} #{response.status} #{request.route.inspect} #{params.inspect}"
+  end
+
+  error do |boom| 
+    response.status = 500
+    raise boom
+  end
 
   route :greeting do
     halt_success "hello, world!"
@@ -23,9 +32,7 @@ class ApiInterface < Jetra::Base
 
 end
 
-RackApp = Jetra::RackAdapter.new(ApiInterface) do |route, params|
-  puts "#{Time.now} route: #{route.inspect} params: #{params.inspect}"
-end
+RackApp = Jetra::RackAdapter.new(ApiInterface)
 
 Rack::Server.start(
   app: RackApp, :Port => 9292
