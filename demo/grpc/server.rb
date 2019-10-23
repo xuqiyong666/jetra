@@ -30,7 +30,7 @@ class ApiInterface < Jetra::Base
 
         puts ["#{Time.now} #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
 
-        raise boom
+        halt_text "Internal Server Error"
     end
 
     route :repeat do

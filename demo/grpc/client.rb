@@ -22,6 +22,15 @@ def send_grpc_request(route, params)
     DemoClient.call(request)
 end
 
+def parse_response_body(body)
+
+    object = body.unpack(Google::Protobuf::DescriptorPool.generated_pool.lookup(body.type_name).msgclass)
+
+    return object.to_ruby if body.type_name == "google.protobuf.Value"
+
+    object
+end
+
 def call_repeat
 
     response = send_grpc_request("repeat", { msg: "hi,grpc!" })
@@ -37,12 +46,8 @@ def call_get_product
 
     puts "---------------- #{Time.now}------------------"
     puts "status: #{response.status}"
-    p response.body
-    p response.body.unpack(Jetra::GrpcDemo::Product)
-    p response.body.type_name
-
-    # p response.body.unpack(response.body.type_name)
-
+    p parse_response_body(response.body)
+    
 end
 
 while true
