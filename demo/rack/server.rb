@@ -14,7 +14,11 @@ class ApiInterface < Jetra::Base
   end
 
   error do |boom| 
+    
     response.status = 500
+
+    puts ["#{Time.now} #{boom.class} - #{boom.message}:", *boom.backtrace].join("\n\t")
+
     raise boom
   end
 

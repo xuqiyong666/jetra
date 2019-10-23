@@ -188,7 +188,7 @@ module Jetra
         @prototype ||= new
       end
 
-      def call(route, params, headers, body)
+      def call(route=nil, params=nil, headers=nil, body=nil)
         prototype.call(route, params, headers, body)
       end
 
