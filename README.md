@@ -41,19 +41,25 @@ ApiInterface.call("repeat", "msg" => "I am fine")
 
 ```
 
-你可以封装成远程调用接口类型，比如grpc,thrift,http接口，详见demo目录下的代码
+## 封装接口
 
-运行方法，依次执行以下两条命令
+你可以封装为对应的接口类型，比如grpc,thrift,http，详见demo目录下的代码
+
+###demo执行步骤
+
+首先需要安装运行示例所依赖的对应Gem
 ```
-  #安装示例依赖的对应Gem
   gem install grpc
   gem install thrift
   gem install rack  #http接口
 ```
 
+启动服务端
 ```sh
   ruby server.rb
 ```
+
+客户端调用
 ```sh
   # 打开另一个终端
   ruby client.rb
