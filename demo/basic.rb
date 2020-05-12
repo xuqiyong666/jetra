@@ -16,9 +16,9 @@ class ApiInterface < Jetra::Base
 end
 
 
-p ApiInterface.call("greeting")
+ApiInterface.call("greeting")
 
-p ApiInterface.call("repeat", "msg" => "I am fine") 
+ApiInterface.call("repeat", "msg" => "I am fine") 
 
 bind = '0.0.0.0:50051'
 

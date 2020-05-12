@@ -34,14 +34,6 @@ class BaseApplication < Jetra::Base
     successInfoBody
   end
 
-  def testInvoke1
-    successInfoBody
-  end
-
-  def testInvoke2
-    [194, successInfoBody]
-  end
-
   def testHalt1
     response.body = successInfoBody
     halt
@@ -50,23 +42,6 @@ class BaseApplication < Jetra::Base
   def testHalt2
     response.status = 333
     response.body = successInfoBody
-    halt
-  end
-
-  def testHalt3
-    halt successInfoBody
-  end
-
-  def testHalt4
-    response.status = -33
-    halt successInfoBody
-  end
-
-  def testHalt5
-    halt [444, successInfoBody]
-  end
-
-  def testHalt6
     halt
   end
 
@@ -134,8 +109,6 @@ class BaseApplication < Jetra::Base
 
   route :testBeforeAndAfter
   route :testStatus
-  route :testInvoke1
-  route :testInvoke2
   route :testHalt1
   route :testHalt2
   route :testHalt3

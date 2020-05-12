@@ -30,7 +30,7 @@ module Jetra
         @custom_block.call(route, params)
       end
 
-      res = @app.call(route, params)
+      res = @app.call(route.to_sym, params)
 
       result = {}
       result[:status] = res.status

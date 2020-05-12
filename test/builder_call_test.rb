@@ -27,8 +27,6 @@ class TestBuilder < Test::Unit::TestCase
     params = "abc"
     response = BuilderAppication.call(:testParams, params)
 
-    p response
-
     assertResponseStatus(response, -1)
 
     assert(response.body[:msg] == "Jetra::Middleware::Validater: params type miss match. excepted Hash, got #{params.class.to_s}")

@@ -18,7 +18,7 @@ class TestBaseApplication < Test::Unit::TestCase
     response = BaseApplication.call(:testBeforeAndAfter)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, -1)
+    assertResponseStatus(response, 0)
 
     assert(response.body[:steps] == ["before1", "before2", "testBeforeAfter", "after1", "after2"])
   end
@@ -30,25 +30,11 @@ class TestBaseApplication < Test::Unit::TestCase
     assertResponseStatus(response, 135)
   end
 
-   def testInvoke1
-    response = BaseApplication.call(:testInvoke1)
-
-    assertSuccessMsg(response)
-    assertResponseStatus(response, -1)
-  end
-  
-  def testInvoke2
-    response = BaseApplication.call(:testInvoke2)
-
-    assertSuccessMsg(response)
-    assertResponseStatus(response, 194)
-  end
-
   def testHalt1
     response = BaseApplication.call(:testHalt1)
 
     assertSuccessMsg(response)
-    assertResponseStatus(response, -1)
+    assertResponseStatus(response, 0)
   end  
 
   def testHalt2
@@ -56,35 +42,7 @@ class TestBaseApplication < Test::Unit::TestCase
 
     assertSuccessMsg(response)
     assertResponseStatus(response, 333)
-  end  
-
-  def testHalt3
-    response = BaseApplication.call(:testHalt3)
-
-    assertSuccessMsg(response)
-    assertResponseStatus(response, -1)
-  end  
-
-  def testHalt4
-    response = BaseApplication.call(:testHalt4)
-
-    assertSuccessMsg(response)
-    assertResponseStatus(response, -33)
-  end  
-
-  def testHalt5
-    response = BaseApplication.call(:testHalt5)
-
-    assertSuccessMsg(response)
-    assertResponseStatus(response, 444)
   end
-
-  def testHalt6
-    response = BaseApplication.call(:testHalt6)
-
-    assert(response.body == "")
-    assertResponseStatus(response, -1)
-  end  
 
   def testRuntimeException
     response = BaseApplication.call(:testRuntimeException)
@@ -121,13 +79,6 @@ class TestBaseApplication < Test::Unit::TestCase
 
     assert_equal(response.body[:msg], "got params #{param}")
   end
-
-  def testEmptyAction
-    response = BaseApplication.call(:testEmptyAction)
-
-    assert(response.body == "")
-    assertResponseStatus(response, -1)
-  end  
 
   def testNotFound
     response = BaseApplication.call(:testNotFoundRoutexxxxyyyyyzzzzzzyuxxidwd)
